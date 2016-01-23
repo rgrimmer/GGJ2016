@@ -22,7 +22,7 @@ public:
 	virtual	void				OnPreUpdate					(void);
 	virtual	void				OnPostUpdate				(float dt);
 
-	//DECLARE_VARIABLES();
+	DECLARE_VARIABLES();
 
 private:
 

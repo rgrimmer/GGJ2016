@@ -1,6 +1,10 @@
 #include "CShPluginExample.h"
 
 
+BEGIN_DERIVED_CLASS(CShPluginExample, CShPlugin)
+	// ...
+END_CLASS()
+
 CShPluginExample::CShPluginExample(void)
 : CShPlugin(CShIdentifier("Example"))
 {
@@ -27,27 +31,27 @@ void CShPluginExample::Release(void)
 				 
 }				 
 				 
-/*virtual*/	void CShPluginExample::OnPlayStop(void)
+/*virtual*/ void CShPluginExample::OnPlayStop(void)
 {				 
 				 
 }				 
 				 
-/*virtual*/	void CShPluginExample::OnPlayPause(void)
+/*virtual*/ void CShPluginExample::OnPlayPause(void)
 {				 
 				 
 }				 
 				 
-/*virtual*/	void CShPluginExample::OnPlayResume(void)
+/*virtual*/ void CShPluginExample::OnPlayResume(void)
 {				 
 				 
 }				 
 				 
-/*virtual*/	void CShPluginExample::OnPreUpdate(void)
+/*virtual*/ void CShPluginExample::OnPreUpdate(void)
 {				 
 				 
 }				 
 				 
-/*virtual*/	void CShPluginExample::OnPostUpdate(float dt)
+/*virtual*/ void CShPluginExample::OnPostUpdate(float dt)
 {
 
 }
