@@ -11,8 +11,8 @@ public:
 								CShPluginExample			(void);
 	virtual						~CShPluginExample			(void);
 
-	bool						Initialize					(void);
-	bool						Release						(void);
+	void						Initialize					(void);
+	void						Release						(void);
 
 	virtual	void				OnPlayStart					(void);
 	virtual	void				OnPlayStop					(void);
@@ -22,7 +22,7 @@ public:
 	virtual	void				OnPreUpdate					(void);
 	virtual	void				OnPostUpdate				(float dt);
 
-	DECLARE_VARIABLES();
+	//DECLARE_VARIABLES();
 
 private:
 
