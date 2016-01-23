@@ -90,8 +90,9 @@ elseif (UNIX) # Not Android and not Apple ... must be Linux or BSD
 	find_package(Threads QUIET)
 	find_package(OpenGL QUIET)
 	find_package(OpenAL QUIET)
+	find_package(X11 QUIET)
 
-	list(APPEND SHSDK_LIBRARIES "${OPENGL_LIBRARIES}" "${OPENAL_LIBRARY}" "${CMAKE_THREAD_LIBS_INIT}")
+	list(APPEND SHSDK_LIBRARIES "${OPENGL_LIBRARIES}" "${X11_LIBRARIES}" "${OPENAL_LIBRARY}" "${CMAKE_THREAD_LIBS_INIT}")
 
 elseif (WIN32)
 
