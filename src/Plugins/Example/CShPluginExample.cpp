@@ -26,31 +26,31 @@ void CShPluginExample::Release(void)
 
 }
 
-/*virtual*/ void CShPluginExample::OnPlayStart(void)
-{				 
-				 
-}				 
-				 
-/*virtual*/ void CShPluginExample::OnPlayStop(void)
-{				 
-				 
-}				 
-				 
-/*virtual*/ void CShPluginExample::OnPlayPause(void)
-{				 
-				 
-}				 
-				 
-/*virtual*/ void CShPluginExample::OnPlayResume(void)
-{				 
-				 
-}				 
-				 
+/*virtual*/ void CShPluginExample::OnPlayStart(const CShIdentifier & levelIdentifier)
+{
+
+}
+
+/*virtual*/ void CShPluginExample::OnPlayStop(const CShIdentifier & levelIdentifier)
+{
+
+}
+
+/*virtual*/ void CShPluginExample::OnPlayPause(const CShIdentifier & levelIdentifier)
+{
+
+}
+
+/*virtual*/ void CShPluginExample::OnPlayResume(const CShIdentifier & levelIdentifier)
+{
+
+}
+
 /*virtual*/ void CShPluginExample::OnPreUpdate(void)
-{				 
-				 
-}				 
-				 
+{
+
+}
+
 /*virtual*/ void CShPluginExample::OnPostUpdate(float dt)
 {
 

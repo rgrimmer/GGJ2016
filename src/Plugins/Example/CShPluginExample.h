@@ -14,10 +14,10 @@ public:
 	void						Initialize					(void);
 	void						Release						(void);
 
-	virtual	void				OnPlayStart					(void);
-	virtual	void				OnPlayStop					(void);
-	virtual	void				OnPlayPause					(void);
-	virtual	void				OnPlayResume				(void);
+	virtual	void				OnPlayStart					(const CShIdentifier & levelIdentifier);
+	virtual	void				OnPlayStop					(const CShIdentifier & levelIdentifier);
+	virtual	void				OnPlayPause					(const CShIdentifier & levelIdentifier);
+	virtual	void				OnPlayResume				(const CShIdentifier & levelIdentifier);
 
 	virtual	void				OnPreUpdate					(void);
 	virtual	void				OnPostUpdate				(float dt);
