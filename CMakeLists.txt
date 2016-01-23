@@ -6,9 +6,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(CMAKE_CXX_STANDARD 11)
+
 set(SH_INCLUDE_DIR "../Shine/include" CACHE PATH "Shine include directory")
 set(SH_LIB_DIR "../Shine/lib" CACHE PATH "Shine libraries directory")
 
 find_package(ShSDK)
+
 
 add_subdirectory(src)
