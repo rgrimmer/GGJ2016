@@ -1,4 +1,13 @@
 
+# Enable Address Sanitizer
+if (UNIX)
+	option(ENABLE_ASAN "Enable address sanitizer" ON)
+
+	if (ENABLE_ASAN)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+	endif (ENABLE_ASAN)
+endif(UNIX)
+
 include_directories(${SHSDK_INCLUDE_DIRS})
 
 set(SOURCES_MAIN main.cpp)
