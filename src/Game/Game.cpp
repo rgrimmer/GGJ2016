@@ -3,7 +3,7 @@
 /**
  * Called before engine initialization
  */
-void OnPreInitialize(void)
+void Game::OnPreInitialize(void)
 {
 	// nothing here
 }
@@ -11,7 +11,7 @@ void OnPreInitialize(void)
 /**
  * Called after engine initialization
  */
-void OnPostInitialize(void)
+void Game::OnPostInitialize(void)
 {
 	GameStateManager::instance().initialize();
 }
@@ -19,7 +19,7 @@ void OnPostInitialize(void)
 /**
  * Called on each frame, before the engine update
  */
-void OnPreUpdate(float deltaTimeInMs)
+void Game::OnPreUpdate(float deltaTimeInMs)
 {
 	// nothing here
 }
@@ -27,7 +27,7 @@ void OnPreUpdate(float deltaTimeInMs)
 /**
  * Called on each frame, after the engine update
  */
-void OnPostUpdate(float deltaTimeInMs)
+void Game::OnPostUpdate(float deltaTimeInMs)
 {
 //	GameStateManager::instance().update(deltaTimeInMs);
 }
@@ -35,7 +35,7 @@ void OnPostUpdate(float deltaTimeInMs)
 /**
  * Called before the engine release
  */
-void OnPreRelease(void)
+void Game::OnPreRelease(void)
 {
 	// nothing here
 }
@@ -43,7 +43,7 @@ void OnPreRelease(void)
 /**
  * Called after the engine release
  */
-void OnPostRelease(void)
+void Game::OnPostRelease(void)
 {
 //	GameStateManager::instance().release();
 }
@@ -51,7 +51,7 @@ void OnPostRelease(void)
 /**
  * Called after a touch down
  */
-void OnTouchDown(int iTouch, float fPositionX, float fPositionY)
+void Game::OnTouchDown(int iTouch, float fPositionX, float fPositionY)
 {
 //	GameStateManager::instance().touchBegin(iTouch, CShVector2(fPositionX, fPositionY));
 }
@@ -59,7 +59,7 @@ void OnTouchDown(int iTouch, float fPositionX, float fPositionY)
 /**
  * Called after a touch up
  */
-void OnTouchUp(int iTouch, float fPositionX, float fPositionY)
+void Game::OnTouchUp(int iTouch, float fPositionX, float fPositionY)
 {
 //	GameStateManager::instance().touchEnd(iTouch, CShVector2(fPositionX, fPositionY));
 }
@@ -67,7 +67,7 @@ void OnTouchUp(int iTouch, float fPositionX, float fPositionY)
 /**
  * Called after a touch move
  */
-void OnTouchMove(int iTouch, float fPositionX, float fPositionY)
+void Game::OnTouchMove(int iTouch, float fPositionX, float fPositionY)
 {
 //	GameStateManager::instance().touchMove(iTouch, CShVector2(fPositionX, fPositionY));
 }

@@ -2,16 +2,16 @@
 
 void RegisterGameCallbacks(void)
 {
-	ShApplication::SetOnPreInitialize(OnPreInitialize);
-	ShApplication::SetOnPostInitialize(OnPostInitialize);
-	ShApplication::SetOnPreUpdate(OnPreUpdate);
-	ShApplication::SetOnPostUpdate(OnPostUpdate);
-	ShApplication::SetOnPreRelease(OnPreRelease);
-	ShApplication::SetOnPostRelease(OnPostRelease);
+	ShApplication::SetOnPreInitialize(Game::OnPreInitialize);
+	ShApplication::SetOnPostInitialize(Game::OnPostInitialize);
+	ShApplication::SetOnPreUpdate(Game::OnPreUpdate);
+	ShApplication::SetOnPostUpdate(Game::OnPostUpdate);
+	ShApplication::SetOnPreRelease(Game::OnPreRelease);
+	ShApplication::SetOnPostRelease(Game::OnPostRelease);
 
-	ShInput::AddOnTouchDown(OnTouchDown);
-	ShInput::AddOnTouchUp(OnTouchUp);
-	ShInput::AddOnTouchMove(OnTouchMove);
+	ShInput::AddOnTouchDown(Game::OnTouchDown);
+	ShInput::AddOnTouchUp(Game::OnTouchUp);
+	ShInput::AddOnTouchMove(Game::OnTouchMove);
 }
 
 #if SH_PC
@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
 	RegisterGameCallbacks();
 
 	ShDisplayProperties displayProperties;
-	
+
 	displayProperties.m_bLandscape		= true;
 	displayProperties.m_width           	= 1280;
 	displayProperties.m_height          	= 720;

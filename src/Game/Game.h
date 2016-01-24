@@ -8,13 +8,18 @@
 
 #include "GameStateManager.h"
 
-void OnPreInitialize	(void);
-void OnPostInitialize	(void);
-void OnPreUpdate		(float dt);
-void OnPostUpdate		(float dt);
-void OnPreRelease		(void);
-void OnPostRelease		(void);
+class Game
+{
+public:
 
-void OnTouchDown		(int iTouch, float fPositionX, float fPositionY);
-void OnTouchUp			(int iTouch, float fPositionX, float fPositionY);
-void OnTouchMove		(int iTouch, float fPositionX, float fPositionY);
+	static void OnPreInitialize		(void);
+	static void OnPostInitialize	(void);
+	static void OnPreUpdate			(float dt);
+	static void OnPostUpdate		(float dt);
+	static void OnPreRelease		(void);
+	static void OnPostRelease		(void);
+
+	static void OnTouchDown			(int iTouch, float fPositionX, float fPositionY);
+	static void OnTouchUp			(int iTouch, float fPositionX, float fPositionY);
+	static void OnTouchMove			(int iTouch, float fPositionX, float fPositionY);
+};
