@@ -8,6 +8,10 @@ void RegisterGameCallbacks(void)
 	ShApplication::SetOnPostUpdate(OnPostUpdate);
 	ShApplication::SetOnPreRelease(OnPreRelease);
 	ShApplication::SetOnPostRelease(OnPostRelease);
+
+	ShInput::AddOnTouchDown(OnTouchDown);
+	ShInput::AddOnTouchUp(OnTouchUp);
+	ShInput::AddOnTouchMove(OnTouchMove);
 }
 
 #if SH_PC

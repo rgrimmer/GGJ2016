@@ -13,7 +13,7 @@ void OnPreInitialize(void)
  */
 void OnPostInitialize(void)
 {
-	// nothing here
+	GameStateManager::instance().initialize();
 }
 
 /**
@@ -29,7 +29,7 @@ void OnPreUpdate(float deltaTimeInMs)
  */
 void OnPostUpdate(float deltaTimeInMs)
 {
-	// nothing here
+//	GameStateManager::instance().update(deltaTimeInMs);
 }
 
 /**
@@ -45,7 +45,32 @@ void OnPreRelease(void)
  */
 void OnPostRelease(void)
 {
-	// nothing here
+//	GameStateManager::instance().release();
 }
+
+/**
+ * Called after a touch down
+ */
+void OnTouchDown(int iTouch, float fPositionX, float fPositionY)
+{
+//	GameStateManager::instance().touchBegin(iTouch, CShVector2(fPositionX, fPositionY));
+}
+
+/**
+ * Called after a touch up
+ */
+void OnTouchUp(int iTouch, float fPositionX, float fPositionY)
+{
+//	GameStateManager::instance().touchEnd(iTouch, CShVector2(fPositionX, fPositionY));
+}
+
+/**
+ * Called after a touch move
+ */
+void OnTouchMove(int iTouch, float fPositionX, float fPositionY)
+{
+//	GameStateManager::instance().touchMove(iTouch, CShVector2(fPositionX, fPositionY));
+}
+
 
 
