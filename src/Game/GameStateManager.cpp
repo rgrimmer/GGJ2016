@@ -1,5 +1,7 @@
 #include "Game.h"
 
+GameStateManager * GameStateManager::instance_ = nullptr;
+
 GameStateManager::GameStateManager(void)
 {
 
@@ -42,7 +44,7 @@ void GameStateManager::touchBegin(int iTouch, const CShVector2 & pos)
 
 void  GameStateManager::touchEnd(int iTouch, const CShVector2 & pos)
 {
-	
+
 }
 
 void  GameStateManager::touchMove(int iTouch, const CShVector2 & pos)
