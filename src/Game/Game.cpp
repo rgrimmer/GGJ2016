@@ -13,13 +13,13 @@ void Game::OnPreInitialize(void)
  */
 void Game::OnPostInitialize(void)
 {
-	GameStateManager::instance().initialize();
+//	GameStateManager::instance().initialize();
 }
 
 /**
  * Called on each frame, before the engine update
  */
-void Game::OnPreUpdate(float deltaTimeInMs)
+void Game::OnPreUpdate(float dt)
 {
 	// nothing here
 }
@@ -27,7 +27,7 @@ void Game::OnPreUpdate(float deltaTimeInMs)
 /**
  * Called on each frame, after the engine update
  */
-void Game::OnPostUpdate(float deltaTimeInMs)
+void Game::OnPostUpdate(float dt)
 {
 //	GameStateManager::instance().update(deltaTimeInMs);
 }
