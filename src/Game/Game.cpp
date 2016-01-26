@@ -26,6 +26,7 @@ void Game::OnPreInitialize(void)
 void Game::OnPostInitialize(void)
 {
 	instance();
+	instance_->m_registeredAction.action = e_action_none;
 
     // Create the Camera
     ShCamera * pCamera = ShCamera::Create(GID(global), GID(camera), false);
@@ -48,6 +49,9 @@ void Game::OnPostInitialize(void)
 	// Initialize Sound
 	instance_->m_sound.Initialize();
 
+	// Initialize Transition
+	instance_->m_transition.Initialize();
+
     // Initialize states
 	instance_->m_stateMainMenu.Initialize();
     instance_->m_stateGame.Initialize();
@@ -68,7 +72,38 @@ void Game::OnPreUpdate(float dt)
  */
 void Game::OnPostUpdate(float dt)
 {
+	if (Transition::e_state_idle != instance_->m_transition.GetState())
+	{
+		instance_->m_transition.Update(dt);
+
+		if (Transition::e_state_waiting == instance_->m_transition.GetState())
+		{
+			switch(instance_->m_registeredAction.action)
+			{
+				case e_action_pop : 
+				{
+					instance_->Pop();					
+				}
+				break;
+
+				case e_action_push : 
+				{
+					instance_->Push(instance_->m_registeredAction.state);					
+				}
+				break;
+
+				default: 
+					SH_ASSERT_ALWAYS(); //should never happened
+				break;
+			}
+
+			instance_->m_transition.SetState(Transition::e_state_transition_out);
+		}
+	}
+
+
 	instance_->m_aStates[instance_->m_iCurrentState]->Update();
+	
 }
 
 /**
@@ -90,6 +125,9 @@ void Game::OnPostRelease(void)
 
 	// Release Sound
 	instance_->m_sound.Release();
+
+	// Release Transition
+	instance_->m_transition.Release();
 }
 
 /**
@@ -119,20 +157,39 @@ void Game::OnTouchMove(int iTouch, float fPositionX, float fPositionY)
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
+void Game::PushWithTransition(EState state)
+{
+	m_registeredAction.action = e_action_push;
+	m_registeredAction.state = state;
+	m_transition.SetState(Transition::e_state_transition_in);
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void Game::PopWithTransition(void)
+{
+	m_registeredAction.action = e_action_pop;
+	m_transition.SetState(Transition::e_state_transition_in);
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
 void Game::Push(EState state)
 {
-    SH_ASSERT(m_iCurrentState < MAX_GAME_STATES);
+	SH_ASSERT(m_iCurrentState < MAX_GAME_STATES);
 
-     if (m_iCurrentState >= 0)
-     {
-         m_aStates[m_iCurrentState]->Obscuring();
-     }
+	if (m_iCurrentState >= 0)
+	{
+		m_aStates[m_iCurrentState]->Obscuring();
+	}
 
-     ++m_iCurrentState;
+	++m_iCurrentState;
 
-     m_aStates[m_iCurrentState] = get(state);
+	m_aStates[m_iCurrentState] = get(state);
 
-     m_aStates[m_iCurrentState]->Entered();
+	m_aStates[m_iCurrentState]->Entered();	
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -142,16 +199,17 @@ void Game::Pop(void)
 {
 	SH_ASSERT(m_iCurrentState >= 0);
 
-    m_aStates[m_iCurrentState]->Exiting();
+	m_aStates[m_iCurrentState]->Exiting();
 
 #if SH_DEBUG
 	m_aStates[m_iCurrentState] = nullptr;
 #endif
 
-    --m_iCurrentState;
+	m_iCurrentState;
 
-    if (m_iCurrentState >= 0)
-    {
-        m_aStates[m_iCurrentState]->Revealed();
-    }
+	if (m_iCurrentState >= 0)
+	{
+		m_aStates[m_iCurrentState]->Revealed();
+	}	
 }
+

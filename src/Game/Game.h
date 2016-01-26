@@ -2,11 +2,14 @@
 
 #include <ShSDK/ShSDK.h>
 
+#include "Transition.h"
 #include "Sound.h"
 
 #include "GameState.h"
 #include "GameStateMenuMain.h"
 #include "GameStateGame.h"
+
+#define SPRITE_LIBRARY "ggj"
 
 #define DISPLAY_WIDTH 2272
 #define DISPLAY_HEIGHT 1536
@@ -32,10 +35,27 @@ private:
 	Game(void);
 public:
 
+	enum EAction
+	{
+		e_action_none,
+		e_action_push,
+		e_action_pop
+	};
+
 	enum EState
 	{
 		MENU,
 		GAME
+	};
+
+	struct SAction
+	{
+		EAction action;
+
+		union
+		{
+			EState state;
+		};
 	};
 
 	static Game & instance (void)
@@ -50,6 +70,8 @@ public:
 
 	void        Push				(EState state);
 	void        Pop					(void);
+	void        PushWithTransition	(EState state);
+	void        PopWithTransition	(void);
 
 	inline GameState * get(EState state)
 	{
@@ -80,11 +102,14 @@ private:
 	GameState *					m_aStates [MAX_GAME_STATES];
 	int							m_iCurrentState;
 
+	Transition					m_transition;
 	Sound						m_sound;
 
 	GameStateMenuMain			m_stateMainMenu;
 	GameStateGame				m_stateGame;
 
 	float						m_fRescaleRatio;
+
+	SAction						m_registeredAction;
 
 };

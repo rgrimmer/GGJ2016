@@ -54,7 +54,7 @@ void GameStateMenuMain::Revealed(void)
 //--------------------------------------------------------------------------------------------------
 void GameStateMenuMain::Exiting(void)
 {
-
+	ShLevel::Release();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void GameStateMenuMain::Exiting(void)
 //--------------------------------------------------------------------------------------------------
 void GameStateMenuMain::Entered(void)
 {
-
+	ShLevel::Load(CShIdentifier("level_main_menu"));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ void GameStateMenuMain::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 /*virtual*/ void GameStateMenuMain::OnTouchDown(int iTouch, float positionX, float positionY)
 {
-
+	Game::instance().PushWithTransition(Game::GAME);
 }
 
 //--------------------------------------------------------------------------------------------------
