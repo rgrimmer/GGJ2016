@@ -13,12 +13,9 @@ public:
 	// Initialization / Release / Activation / Deactivation
 	virtual void	Initialize				(void);
 	virtual void	Release					(void);
+	virtual void	Activate				(void);
+	virtual void	DeActivate				(void);
 
-	virtual void	Obscuring				(void);
-	virtual void	Revealed				(void);
-	virtual void	Exiting					(void);
-	virtual void	Entered					(void);
-			
 	//
 	// Update
 	void			Update					(float dt);

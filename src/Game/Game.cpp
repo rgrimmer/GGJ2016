@@ -1,17 +1,5 @@
 #include "Game.h"
 
-Game * Game::instance_ = nullptr;
-
-
-Game::Game(void)
-: m_iCurrentState(-1)
-{
-    for (int i = 0; i < MAX_GAME_STATES; ++i)
-    {
-        m_aStates[i] = nullptr;
-    }
-}
-
 /**
  * Called before engine initialization
  */
@@ -25,34 +13,7 @@ void Game::OnPreInitialize(void)
  */
 void Game::OnPostInitialize(void)
 {
-	instance();
-
-    // Create the Camera
-    ShCamera * pCamera = ShCamera::Create(GID(global), GID(camera), false);
-    SH_ASSERT(shNULL != pCamera);
-
-    ShCamera::SetPosition(pCamera, CShVector3(0.0f, 0.0f, 100.0f));
-    ShCamera::SetTarget(pCamera, CShVector3(0.0f, 0.0f, 0.0f));
-
-    ShCamera::SetUp(pCamera, CShVector3(0.0f, 1.0f, 0.0f));
-
-    ShCamera::SetProjectionOrtho(pCamera);
-    ShCamera::SetNearPlaneDistance(pCamera, 0.0f);
-    ShCamera::SetFarPlaneDistance(pCamera, 200.0f);
-
-    instance_->m_fRescaleRatio = ShDisplay::GetHeight() / (float)ShDisplay::GetWidth();
-    ShCamera::SetViewport(pCamera, DISPLAY_WIDTH, DISPLAY_WIDTH * instance_->m_fRescaleRatio);
-
-    ShCamera::SetCurrent2D(pCamera);
-
-	// Initialize Sound
-	instance_->m_sound.Initialize();
-
-    // Initialize states
-	instance_->m_stateMainMenu.Initialize();
-    instance_->m_stateGame.Initialize();
-
-	instance_->Push(MENU);
+//	GameStateManager::instance().initialize();
 }
 
 /**
@@ -68,7 +29,7 @@ void Game::OnPreUpdate(float dt)
  */
 void Game::OnPostUpdate(float dt)
 {
-	instance_->m_aStates[instance_->m_iCurrentState]->Update();
+//	GameStateManager::instance().update(deltaTimeInMs);
 }
 
 /**
@@ -84,12 +45,7 @@ void Game::OnPreRelease(void)
  */
 void Game::OnPostRelease(void)
 {
-	// Release states
-	instance_->m_stateGame.Release();
-	instance_->m_stateMainMenu.Release();
-
-	// Release Sound
-	instance_->m_sound.Release();
+//	GameStateManager::instance().release();
 }
 
 /**
@@ -97,7 +53,7 @@ void Game::OnPostRelease(void)
  */
 void Game::OnTouchDown(int iTouch, float fPositionX, float fPositionY)
 {
-	instance_->m_aStates[instance_->m_iCurrentState]->OnTouchDown(iTouch, fPositionX, fPositionY);
+//	GameStateManager::instance().touchBegin(iTouch, CShVector2(fPositionX, fPositionY));
 }
 
 /**
@@ -105,7 +61,7 @@ void Game::OnTouchDown(int iTouch, float fPositionX, float fPositionY)
  */
 void Game::OnTouchUp(int iTouch, float fPositionX, float fPositionY)
 {
-	instance_->m_aStates[instance_->m_iCurrentState]->OnTouchUp(iTouch, fPositionX, fPositionY);
+//	GameStateManager::instance().touchEnd(iTouch, CShVector2(fPositionX, fPositionY));
 }
 
 /**
@@ -113,45 +69,8 @@ void Game::OnTouchUp(int iTouch, float fPositionX, float fPositionY)
  */
 void Game::OnTouchMove(int iTouch, float fPositionX, float fPositionY)
 {
-	instance_->m_aStates[instance_->m_iCurrentState]->OnTouchMove(iTouch, fPositionX, fPositionY);
+//	GameStateManager::instance().touchMove(iTouch, CShVector2(fPositionX, fPositionY));
 }
 
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-void Game::Push(EState state)
-{
-    SH_ASSERT(m_iCurrentState < MAX_GAME_STATES);
 
-     if (m_iCurrentState >= 0)
-     {
-         m_aStates[m_iCurrentState]->Obscuring();
-     }
 
-     ++m_iCurrentState;
-
-     m_aStates[m_iCurrentState] = get(state);
-
-     m_aStates[m_iCurrentState]->Entered();
-}
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-void Game::Pop(void)
-{
-	SH_ASSERT(m_iCurrentState >= 0);
-
-    m_aStates[m_iCurrentState]->Exiting();
-
-#if SH_DEBUG
-	m_aStates[m_iCurrentState] = nullptr;
-#endif
-
-    --m_iCurrentState;
-
-    if (m_iCurrentState >= 0)
-    {
-        m_aStates[m_iCurrentState]->Revealed();
-    }
-}

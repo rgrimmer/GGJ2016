@@ -13,11 +13,8 @@ public:
 	// Initialization / Release / Activation / Deactivation
 	virtual void	Initialize				(void);
 	virtual void	Release					(void);
-
-	virtual void	Obscuring				(void);
-	virtual void	Revealed				(void);
-	virtual void	Exiting					(void);
-	virtual void	Entered					(void);
+	virtual void	Activate				(void);
+	virtual void	DeActivate				(void);
 
 	//
 	// Update
