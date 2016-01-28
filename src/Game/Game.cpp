@@ -54,6 +54,7 @@ void Game::OnPostInitialize(void)
 
     // Initialize states
 	instance_->m_stateMainMenu.Initialize();
+	instance_->m_stateCredits.Initialize();
     instance_->m_stateGame.Initialize();
 
 	instance_->Push(MENU);
@@ -159,6 +160,9 @@ void Game::OnTouchMove(int iTouch, float fPositionX, float fPositionY)
 //--------------------------------------------------------------------------------------------------
 void Game::PushWithTransition(EState state)
 {
+	if (m_transition.GetState() != Transition::e_state_idle)
+		return;
+
 	m_registeredAction.action = e_action_push;
 	m_registeredAction.state = state;
 	m_transition.SetState(Transition::e_state_transition_in);
@@ -169,6 +173,9 @@ void Game::PushWithTransition(EState state)
 //--------------------------------------------------------------------------------------------------
 void Game::PopWithTransition(void)
 {
+	if (m_transition.GetState() != Transition::e_state_idle)
+		return;
+
 	m_registeredAction.action = e_action_pop;
 	m_transition.SetState(Transition::e_state_transition_in);
 }
@@ -205,7 +212,7 @@ void Game::Pop(void)
 	m_aStates[m_iCurrentState] = nullptr;
 #endif
 
-	m_iCurrentState;
+	--m_iCurrentState;
 
 	if (m_iCurrentState >= 0)
 	{

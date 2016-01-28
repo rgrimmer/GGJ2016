@@ -7,6 +7,7 @@
 
 #include "GameState.h"
 #include "GameStateMenuMain.h"
+#include "GameStateMenuCredits.h"
 #include "GameStateGame.h"
 
 #define SPRITE_LIBRARY "ggj"
@@ -14,7 +15,7 @@
 #define DISPLAY_WIDTH 2272
 #define DISPLAY_HEIGHT 1536
 
-#define MAX_GAME_STATES 2
+#define MAX_GAME_STATES 3
 
 class Game
 {
@@ -45,6 +46,7 @@ public:
 	enum EState
 	{
 		MENU,
+		CREDITS,
 		GAME
 	};
 
@@ -83,6 +85,12 @@ public:
 			}
 			break;
 
+			case CREDITS:
+			{
+				return(&m_stateCredits);
+			}
+			break;
+
 			case GAME:
 			{
 				return(&m_stateGame);
@@ -106,6 +114,7 @@ private:
 	Sound						m_sound;
 
 	GameStateMenuMain			m_stateMainMenu;
+	GameStateMenuCredits		m_stateCredits;
 	GameStateGame				m_stateGame;
 
 	float						m_fRescaleRatio;

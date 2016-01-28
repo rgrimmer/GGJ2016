@@ -3,8 +3,9 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*explicit*/ GameStateGame::GameStateGame(void)
+/*explicit*/ GameStateMenuCredits::GameStateMenuCredits(void)
 : GameState()
+, m_pTextZone(shNULL)
 {
 
 }
@@ -12,7 +13,7 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ GameStateGame::~GameStateGame(void)
+/*virtual*/ GameStateMenuCredits::~GameStateMenuCredits(void)
 {
 
 }
@@ -20,7 +21,7 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameStateGame::Initialize(void)
+void GameStateMenuCredits::Initialize(void)
 {
 
 }
@@ -28,7 +29,7 @@ void GameStateGame::Initialize(void)
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameStateGame::Release(void)
+void GameStateMenuCredits::Release(void)
 {
 
 }
@@ -36,7 +37,63 @@ void GameStateGame::Release(void)
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameStateGame::Obscuring(void)
+void GameStateMenuCredits::Obscuring(void)
+{
+	DeActivate();
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameStateMenuCredits::Revealed(void)
+{
+	Activate();
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameStateMenuCredits::Exiting(void)
+{
+	DeActivate();
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameStateMenuCredits::Entered(void)
+{
+	Activate();
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameStateMenuCredits::Activate(void)
+{
+	CShIdentifier levelIdentifier("level_credits");
+	ShLevel::Load(CShIdentifier(levelIdentifier));
+	
+	ShLayer * pLayer = ShLayer::Find(CShIdentifier("layer_default"));
+	m_pTextZone = ShTextZone::Create(levelIdentifier, 
+								CShIdentifier("text"), 
+								pLayer, 
+								CShAABB2(-1000.0f, 1000.0f, -50.0f, 50.0f), 
+								CShVector3(0.0f, 0.0f, 5.0f), 
+								CShEulerAngles_ZERO, 
+								CShVector3(1.0f, 1.0f, 1.0f), 
+								ShTextZone::e_align_center_center,
+								false,
+								CShIdentifier("Futura Book_60.abc"),
+								CShRGBAf(1.0f,1.0f,1.0f,1.0f));
+
+	ShTextZone::SetText(m_pTextZone, CShString("aaa aaa aaaaaa aaaa"));
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameStateMenuCredits::DeActivate(void)
 {
 	ShLevel::Release();
 }
@@ -44,31 +101,7 @@ void GameStateGame::Obscuring(void)
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameStateGame::Revealed(void)
-{
-	ShLevel::Load(CShIdentifier("level_game"));
-}
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-void GameStateGame::Exiting(void)
-{
-	ShLevel::Release();
-}
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-void GameStateGame::Entered(void)
-{
-	ShLevel::Load(CShIdentifier("level_game"));
-}
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-void GameStateGame::Update(float dt)
+void GameStateMenuCredits::Update(float dt)
 {
 
 }
@@ -76,15 +109,7 @@ void GameStateGame::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ void GameStateGame::OnTouchDown(int iTouch, float positionX, float positionY)
-{
-	Game::instance().PopWithTransition();
-}
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-/*virtual*/ void GameStateGame::OnTouchUp(int iTouch, float positionX, float positionY)
+/*virtual*/ void GameStateMenuCredits::OnTouchDown(int iTouch, float positionX, float positionY)
 {
 
 }
@@ -92,7 +117,15 @@ void GameStateGame::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ void GameStateGame::OnTouchMove(int iTouch, float positionX, float positionY)
+/*virtual*/ void GameStateMenuCredits::OnTouchUp(int iTouch, float positionX, float positionY)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+/*virtual*/ void GameStateMenuCredits::OnTouchMove(int iTouch, float positionX, float positionY)
 {
 
 }

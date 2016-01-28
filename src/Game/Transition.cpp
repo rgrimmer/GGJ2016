@@ -34,6 +34,7 @@ void Transition::Initialize(void)
 	m_pEntityBackground = ShEntity2::Find(levelIdentifier, CShIdentifier("sprite_ggj_background"));
 	SH_ASSERT(NULL != m_pEntityBackground);
 
+	ShObject::SetAlpha(m_pEntityBackground, 0.0f);
 	ShEntity2::SetShow(m_pEntityBackground, false);
 
 	m_eState = e_state_idle;
