@@ -55,7 +55,7 @@ void CShPluginPlatformer::Release(void)
 				const CShVector2 vPosition = ShObject::GetPosition2(aEntities[nEntity]);
 				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
 				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
-				const b2BodyType b2Type = b2_dynamic_body;
+				const b2BodyType b2Type = b2_dynamicBody;
 				const int iCategoryBits = e_type_player;
 				const int iMaskBits = 255;
 				const bool isSensor = false;
@@ -80,7 +80,7 @@ void CShPluginPlatformer::Release(void)
 				const CShVector2 vPosition = ShObject::GetPosition2(aEntities[nEntity]);
 				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
 				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
-				const b2BodyType b2Type = b2_dynamic_body;
+				const b2BodyType b2Type = b2_dynamicBody;
 				const int iCategoryBits = e_type_enemy;
 				const int iMaskBits = 255;
 				const bool isSensor = false;
