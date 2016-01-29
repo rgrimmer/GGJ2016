@@ -26,9 +26,7 @@
 //--------------------------------------------------------------------------------------------------
 /*virtual*/ GameObjectPlayer::~GameObjectPlayer(void)
 {
-	m_pBody->SetUserData(NULL);
-	b2World * world = m_pBody->GetWorld();
-	world->DestroyBody(m_pBody);
+
 }
 
 //--------------------------------------------------------------------------------------------------
