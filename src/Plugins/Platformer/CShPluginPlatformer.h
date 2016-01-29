@@ -41,6 +41,7 @@ private:
 
 protected:
 
+	CShArray<b2Body*> m_aBody;
 	b2World * m_pWorld;
 
 };
