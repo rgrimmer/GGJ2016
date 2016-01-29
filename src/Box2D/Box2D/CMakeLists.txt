@@ -170,6 +170,7 @@ if(BOX2D_BUILD_STATIC)
 		CLEAN_DIRECT_OUTPUT 1
 		VERSION ${BOX2D_VERSION}
 	)
+	set_target_properties(Box2D PROPERTIES POSITION_INDEPENDENT_CODE True)
 endif()
 
 # These are used to create visual studio folders.
