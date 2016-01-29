@@ -8,6 +8,7 @@
 #include "GameObject.h"
 #include "GameObjectPlayer.h"
 #include "GameObjectEnemy.h"
+#include "GameObjectPlatform.h"
 
 #define RATIO_B2_SH 10.0f
 #define convert_Sh_b2(a) (b2Vec2(a.m_x/RATIO_B2_SH, a.m_y/RATIO_B2_SH))
