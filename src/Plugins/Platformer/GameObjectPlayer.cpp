@@ -9,7 +9,6 @@
 : GameObject(body)
 , m_pEntity(pEntity)
 {
-
 #if SH_PC
 	m_aInputs[e_input_move_left] = ShInput::CreateInputPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_left, 0.1f);
 	m_aInputs[e_input_move_right] = ShInput::CreateInputPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_right, 0.1f);

@@ -43,7 +43,7 @@ void CShPluginPlatformer::Release(void)
 	ShEntity2::GetEntity2Array(levelIdentifier, aEntities);
 
 	int nEntityCount = aEntities.GetCount();
-	for (int nEntity = 0; nEntity < nEntityCount; ++nEntityCount)
+	for (int nEntity = 0; nEntity < nEntityCount; ++nEntity)
 	{
 		int iDataSetCount = ShObject::GetDataSetCount(aEntities[nEntity]);
 
@@ -130,10 +130,12 @@ void CShPluginPlatformer::Release(void)
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
 			}
 		}
+
+		m_aBody.Add(pBody);
 	}
 
 	SH_ASSERT(shNULL != pBody)
-	m_aBody.Add(pBody);
+	
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)

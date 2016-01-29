@@ -16,11 +16,11 @@ source_group("GameObject\\Enemy" FILES ${SOURCES_GAMEOBJECTENEMY})
 set(SOURCES_GAMEOBJECTPLATFORM GameObjectPlatform.cpp GameObjectPlatform.h)
 source_group("GameObject\\Platform" FILES ${SOURCES_GAMEOBJECTPLATFORM})
 
-set(SOURCES_INPUT GameObjectPlatform.cpp GameObjectPlatform.h)
-source_group("GameObject\\Platform" FILES ${SOURCES_GAMEOBJECTPLATFORM})
+set(SOURCES_CAMERA GameCamera.cpp GameCamera.h)
+source_group("Camera" FILES ${SOURCES_CAMERA})
 
 # Compile to use it on Runtime
-add_library(PluginPlatformer STATIC ${SOURCES_PLUGIN_IMPL} ${SOURCES_GAMEOBJECT} ${SOURCES_GAMEOBJECTPLAYER} ${SOURCES_GAMEOBJECTENEMY} ${SOURCES_GAMEOBJECTPLATFORM})
+add_library(PluginPlatformer STATIC ${SOURCES_PLUGIN_IMPL} ${SOURCES_GAMEOBJECT} ${SOURCES_GAMEOBJECTPLAYER} ${SOURCES_GAMEOBJECTENEMY} ${SOURCES_GAMEOBJECTPLATFORM} ${SOURCES_CAMERA})
 set_property(TARGET PluginPlatformer PROPERTY FOLDER "Runtime")
 set_property(TARGET PluginPlatformer APPEND PROPERTY COMPILE_DEFINITIONS "SH_DEV=1")
 set_property(TARGET PluginPlatformer APPEND PROPERTY COMPILE_DEFINITIONS "SH_DEBUG=1")
