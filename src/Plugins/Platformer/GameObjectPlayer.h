@@ -7,6 +7,11 @@ class GameObjectPlayer : public GameObject
 
 public:
 
+	enum EState
+	{
+		e_state_none
+	};
+
 	//
 	// Construction / Destruction
 	explicit			GameObjectPlayer			(b2Body * body, ShEntity2 * pEntity);
@@ -32,9 +37,7 @@ protected:
 
 private:
 public:
-		
+
 	EState				m_eState;				///< @todo comment
 	ShEntity2*			m_pEntity;				///< @todo comment
-};	
-
-#endif // __CShPinballObjectBall_H
+};

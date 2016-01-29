@@ -44,7 +44,7 @@ void CShPluginPlatformer::Release(void)
 		for (int nDataSet = 0; nDataSet < iDataSetCount; ++nDataSet)
 		{
 			ShDataSet * pDataSet = ShObject::GetDataSet(aEntities[nEntity], nDataSet);
-				
+
 			CShIdentifier idDataSetIdentifier = ShDataSet::GetDataSetIdentifier(pDataSet);
 
 			if (CShIdentifier("player") == idDataSetIdentifier)
@@ -56,7 +56,7 @@ void CShPluginPlatformer::Release(void)
 				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
 				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
 				const b2BodyType b2Type = b2_dynamicBody;
-				const int iCategoryBits = e_type_player;
+				const int iCategoryBits = GameObject::e_type_player;
 				const int iMaskBits = 255;
 				const bool isSensor = false;
 
@@ -81,7 +81,7 @@ void CShPluginPlatformer::Release(void)
 				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
 				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
 				const b2BodyType b2Type = b2_dynamicBody;
-				const int iCategoryBits = e_type_enemy;
+				const int iCategoryBits = GameObject::e_type_enemy;
 				const int iMaskBits = 255;
 				const bool isSensor = false;
 
@@ -101,13 +101,11 @@ void CShPluginPlatformer::Release(void)
 			{
 				int iDataCount = ShDataSet::GetDataCount(pDataSet);
 				ShObject* pShape = shNULL;
-
-				ShObject* pShape = shNULL;
 				const CShVector2 vPosition = ShObject::GetPosition2(aEntities[nEntity]);
 				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
 				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
-				const b2BodyType b2Type = b2_static_body;
-				const int iCategoryBits = e_type_platform;
+				const b2BodyType b2Type = b2_staticBody;
+				const int iCategoryBits = GameObject::e_type_platform;
 				const int iMaskBits = 255;
 				const bool isSensor = false;
 
@@ -119,14 +117,14 @@ void CShPluginPlatformer::Release(void)
 					{
 						ShDataSet::GetDataValue(pDataSet, nData, &pShape);
 					}
-				}		
+				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
 			}
 		}
 	}
 
-	SH_ASSERT(shNULL != pBody)	
+	SH_ASSERT(shNULL != pBody)
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)

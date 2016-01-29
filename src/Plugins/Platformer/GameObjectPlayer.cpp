@@ -1,4 +1,4 @@
-#include "PluginPlatformer.h"
+#include "CShPluginPlatformer.h"
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
