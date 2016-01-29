@@ -18,7 +18,7 @@ public:
 	void				SetState					(EState eState);
 	EState				GetState					(void) const;
 
-	void				Update						(void);
+	void				Update						(float dt);
 
 	virtual EType		GetType						(void) const;
 

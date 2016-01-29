@@ -1,6 +1,6 @@
 #include "CShPluginPlatformer.h"
 
-#define PLAYER_SPEED 10.0f
+#define PLAYER_SPEED 1.0f
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
@@ -58,27 +58,28 @@ GameObjectPlayer::EState GameObjectPlayer::GetState(void) const
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameObjectPlayer::Update(void)
+void GameObjectPlayer::Update(float dt)
 {
-	b2Vec2 vSpeed = m_pBody->GetLinearVelocity();
+	b2Vec2 vSpeed(0.0f, m_pBody->GetLinearVelocity().y);
 
 	if (ShInput::IsTrue(m_aInputs[e_input_move_left]))
-	{
-		vSpeed.x = PLAYER_SPEED;
-	}
-
-	if (ShInput::IsTrue(m_aInputs[e_input_move_right]))
 	{
 		vSpeed.x = -PLAYER_SPEED;
 	}
 
-	if (ShInput::IsTrue(m_aInputs[e_input_jump]))
+	if (ShInput::IsTrue(m_aInputs[e_input_move_right]))
 	{
-		m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 5.0f), m_pBody->GetPosition(), false);
+		vSpeed.x = PLAYER_SPEED;
 	}
 
 	m_pBody->SetLinearVelocity(b2Vec2(vSpeed));
 
-	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x);
-	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y);
+	if (ShInput::IsTrue(m_aInputs[e_input_jump]))
+	{
+		m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 20.0f), m_pBody->GetPosition(), false);
+	}
+
+
+	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
+	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y * RATIO_B2_SH);
 }

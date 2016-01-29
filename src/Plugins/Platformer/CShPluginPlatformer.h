@@ -12,7 +12,7 @@
 #include "GameObjectEnemy.h"
 #include "GameObjectPlatform.h"
 
-#define RATIO_B2_SH 10.0f
+#define RATIO_B2_SH 200.0f
 #define convert_Sh_b2(a) (b2Vec2(a.m_x/RATIO_B2_SH, a.m_y/RATIO_B2_SH))
 
 class CShPluginPlatformer : public CShPlugin
@@ -46,4 +46,7 @@ protected:
 	CShArray<b2Body*> m_aBody;
 	b2World * m_pWorld;
 
+	GameObjectPlayer *				m_pPlayer;
+	CShArray<GameObjectEnemy *>		m_aEnemy;
+	CShArray<GameObjectPlatform *>	m_aPlatform;
 };

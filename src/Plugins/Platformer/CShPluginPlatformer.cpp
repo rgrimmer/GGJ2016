@@ -79,6 +79,7 @@ void CShPluginPlatformer::Release(void)
 				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
+				m_pPlayer = new GameObjectPlayer(pBody, aEntities[nEntity]);
 			}
 			else if(CShIdentifier("enemy") == idDataSetIdentifier)
 			{
@@ -104,6 +105,7 @@ void CShPluginPlatformer::Release(void)
 				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
+				m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
 			}
 			else if (CShIdentifier("platform") == idDataSetIdentifier)
 			{
@@ -128,6 +130,7 @@ void CShPluginPlatformer::Release(void)
 				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
+				//m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
 			}
 		}
 
@@ -148,6 +151,22 @@ void CShPluginPlatformer::Release(void)
 	}
 
 	m_aBody.Empty();
+
+	SH_SAFE_DELETE(m_pPlayer);
+
+	int iEnemyCount = m_aEnemy.GetCount();
+	for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
+	{
+		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy]; 
+		SH_SAFE_DELETE(pEnemy);
+	}
+
+	int iPlatformCount = m_aPlatform.GetCount();
+	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
+	{
+		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform]; 
+		SH_SAFE_DELETE(pPlatform);
+	}
 
 	SH_SAFE_DELETE(m_pWorld);
 }
@@ -172,6 +191,23 @@ void CShPluginPlatformer::Release(void)
 	//
 	// Update the world of Box2D 
 	m_pWorld->Step(dt, 3, 3);
+
+
+	m_pPlayer->Update(dt);
+
+	int iEnemyCount = m_aEnemy.GetCount();
+	for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
+	{
+		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy]; 
+		pEnemy->Update(dt);
+	}
+
+	int iPlatformCount = m_aPlatform.GetCount();
+	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
+	{
+		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform]; 
+		//pPlatform->Update(dt);
+	}
 }
 
 b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)

@@ -47,7 +47,7 @@ GameObjectPlatform::EState GameObjectPlatform::GetState(void) const
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameObjectPlatform::Update(void)
+void GameObjectPlatform::Update(float dt)
 {
 
 }

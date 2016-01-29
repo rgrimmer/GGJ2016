@@ -47,7 +47,7 @@ GameObjectEnemy::EState GameObjectEnemy::GetState(void) const
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameObjectEnemy::Update(void)
+void GameObjectEnemy::Update(float dt)
 {
 
 }
