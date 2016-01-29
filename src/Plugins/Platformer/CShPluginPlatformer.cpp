@@ -29,6 +29,12 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStart(const CShIdentifier & levelIdentifier)
 {
+	//
+	// Create a world with gravity
+	b2Vec2 gravity;
+	gravity.Set(0.0f, -9.8f);
+	m_pWorld = new b2World(gravity);
+
 	b2Body *pBody = shNULL;
 	CShArray<ShEntity2 *> aEntities;
 
@@ -129,7 +135,7 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
 {
-
+	SH_SAFE_DELETE(m_pWorld);
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayPause(const CShIdentifier & levelIdentifier)
@@ -149,7 +155,9 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
-
+	//
+	// Update the world of Box2D 
+	m_pWorld->Step(dt, 3, 3);
 }
 
 b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)
