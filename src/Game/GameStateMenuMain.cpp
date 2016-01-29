@@ -28,10 +28,17 @@
 void GameStateMenuMain::Initialize(void)
 {
 	//create inputs
+#if SH_PC
 	m_aInputs[e_input_up] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_up, 0.1f);
 	m_aInputs[e_input_down] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_down, 0.1f);
 	m_aInputs[e_input_validate] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_return, 0.1f);
 	m_aInputs[e_input_cancel] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_escape, 0.1f);
+#else
+	m_aInputs[e_input_up] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_up, 0.1f);
+	m_aInputs[e_input_down] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_down, 0.1f);
+	m_aInputs[e_input_validate] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_return, 0.1f);
+	m_aInputs[e_input_cancel] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_escape, 0.1f);
+#endif // SH_PC
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -131,7 +138,7 @@ void GameStateMenuMain::Update(float dt)
 	{
 		switch(m_iMenuSelectedIndex)
 		{
-			case e_menu_play : 
+			case e_menu_play :
 			{
 				Game::instance().PushWithTransition(Game::GAME);
 			}
@@ -161,7 +168,7 @@ void GameStateMenuMain::UpdateHighlightPosition(void)
 //--------------------------------------------------------------------------------------------------
 /*virtual*/ void GameStateMenuMain::OnTouchDown(int iTouch, float positionX, float positionY)
 {
-	
+
 }
 
 //--------------------------------------------------------------------------------------------------
