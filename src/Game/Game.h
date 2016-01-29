@@ -2,9 +2,14 @@
 
 #include <ShSDK/ShSDK.h>
 
+#include "Sound.h"
+
 #include "GameState.h"
 #include "GameStateMenuMain.h"
 #include "GameStateGame.h"
+
+#define DISPLAY_WIDTH 2272
+#define DISPLAY_HEIGHT 1536
 
 #define MAX_GAME_STATES 2
 
@@ -23,6 +28,8 @@ public:
 	static void OnTouchUp			(int iTouch, float fPositionX, float fPositionY);
 	static void OnTouchMove			(int iTouch, float fPositionX, float fPositionY);
 
+private:
+	Game(void);
 public:
 
 	enum EState
@@ -41,8 +48,8 @@ public:
 		return(*instance_);
 	}
 
-	void        push				(EState state);
-	void        pop					(void);
+	void        Push				(EState state);
+	void        Pop					(void);
 
 	inline GameState * get(EState state)
 	{
@@ -73,7 +80,11 @@ private:
 	GameState *					m_aStates [MAX_GAME_STATES];
 	int							m_iCurrentState;
 
+	Sound						m_sound;
+
 	GameStateMenuMain			m_stateMainMenu;
 	GameStateGame				m_stateGame;
+
+	float						m_fRescaleRatio;
 
 };
