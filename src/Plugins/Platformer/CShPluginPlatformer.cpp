@@ -1,4 +1,4 @@
-#include "CShPluginExample.h"
+#include "CShPluginPlatformer.h"
 
 #include <Box2D/Box2D.h>
 
@@ -12,7 +12,7 @@ CShPluginPlatformer::CShPluginPlatformer(void)
 
 }
 
-/*virtual*/ CShPluginPlatformer::~CShPluginExample(void)
+/*virtual*/ CShPluginPlatformer::~CShPluginPlatformer(void)
 {
 
 }

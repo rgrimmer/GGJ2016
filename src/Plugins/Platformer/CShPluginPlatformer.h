@@ -3,6 +3,9 @@
 #include <ShSDK/ShSDK.h>
 #include <ShEngineExt/ShEngineExt.h>
 
+#include "GameObject.h"
+#include "GameObjectPlayer.h"
+
 class CShPluginPlatformer : public CShPlugin
 {
 
