@@ -30,6 +30,6 @@ endif (WIN32)
 
 set_property(TARGET ExtGGJ2016 PROPERTY PREFIX "")
 
-target_link_libraries(ExtGGJ2016 ${SHSDK_EDITOR_LIBRARIES})
+target_link_libraries(ExtGGJ2016 ${SHSDK_EDITOR_LIBRARIES} Box2D)
 
 file(COPY "GGJ2016.configext" DESTINATION "${SHINE_EDITOR_EXT_DIR}")
