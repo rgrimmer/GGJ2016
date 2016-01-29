@@ -15,9 +15,9 @@
 //--------------------------------------------------------------------------------------------------
 /*virtual*/ GameObjectPlatform::~GameObjectPlatform(void)
 {
-	m_body->SetUserData(NULL);
-	b2World * world = m_body->GetWorld();
-	world->DestroyBody(m_body);
+	m_pBody->SetUserData(NULL);
+	b2World * world = m_pBody->GetWorld();
+	world->DestroyBody(m_pBody);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	b2Body *			m_body;
+	b2Body *			m_pBody;
 
 private:
 

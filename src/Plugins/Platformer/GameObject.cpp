@@ -4,11 +4,11 @@
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
 /*explicit*/ GameObject::GameObject(b2Body * body)
-: m_body(body)
+: m_pBody(body)
 {
-	if (NULL != m_body)
+	if (NULL != m_pBody)
 	{
-		m_body->SetUserData(this);
+		m_pBody->SetUserData(this);
 	}
 }
 
@@ -24,5 +24,5 @@
 //--------------------------------------------------------------------------------------------------
 b2Body * GameObject::GetBody(void)
 {
-	return(m_body);
+	return(m_pBody);
 }
