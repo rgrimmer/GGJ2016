@@ -79,6 +79,7 @@ void CShPluginPlatformer::Release(void)
 				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
+				m_aBody.Add(pBody);
 				m_pPlayer = new GameObjectPlayer(pBody, aEntities[nEntity]);
 			}
 			else if(CShIdentifier("enemy") == idDataSetIdentifier)
@@ -105,6 +106,7 @@ void CShPluginPlatformer::Release(void)
 				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
+				m_aBody.Add(pBody);
 				m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
 			}
 			else if (CShIdentifier("platform") == idDataSetIdentifier)
@@ -130,11 +132,10 @@ void CShPluginPlatformer::Release(void)
 				}
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
+				m_aBody.Add(pBody);
 				//m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
 			}
 		}
-
-		m_aBody.Add(pBody);
 	}
 
 	SH_ASSERT(shNULL != pBody)
@@ -143,15 +144,6 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
 {
-	int iBodyCount = m_aBody.GetCount();
-	for (int nBody = 0; nBody < iBodyCount; ++nBody)
-	{
-		b2Body* pBody = m_aBody[nBody];
-		m_pWorld->DestroyBody(pBody);
-	}
-
-	m_aBody.Empty();
-
 	SH_SAFE_DELETE(m_pPlayer);
 
 	int iEnemyCount = m_aEnemy.GetCount();
@@ -168,6 +160,14 @@ void CShPluginPlatformer::Release(void)
 		SH_SAFE_DELETE(pPlatform);
 	}
 
+	int iBodyCount = m_aBody.GetCount();
+	for (int nBody = 0; nBody < iBodyCount; ++nBody)
+	{
+		b2Body* pBody = m_aBody[nBody];
+		m_pWorld->DestroyBody(pBody);
+	}
+
+	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);
 }
 
