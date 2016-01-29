@@ -18,7 +18,7 @@ public:
 	virtual void	Revealed				(void);
 	virtual void	Exiting					(void);
 	virtual void	Entered					(void);
-			
+		
 	//
 	// Update
 	void			Update					(float dt);
@@ -32,7 +32,8 @@ public:
 protected:
 
 private:
-
+	void			Activate				(void);
+	void			DeActivate				(void);
 public:
 
 protected:
