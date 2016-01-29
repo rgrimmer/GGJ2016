@@ -13,11 +13,11 @@
 	m_aInputs[e_input_move_left] = ShInput::CreateInputPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_left, 0.1f);
 	m_aInputs[e_input_move_right] = ShInput::CreateInputPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_right, 0.1f);
 	m_aInputs[e_input_jump] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_space, 0.1f);
-#else if SH_LINUX
+#elif SH_LINUX
 	m_aInputs[e_input_move_left] = ShInput::CreateInputPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_left, 0.1f);
 	m_aInputs[e_input_move_right] = ShInput::CreateInputPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_right, 0.1f);
 	m_aInputs[e_input_jump] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_space, 0.1f);
-#endif //SH_PC
+#endif // SH_PC
 
 }
 
