@@ -14,7 +14,7 @@ endif(WIN32)
 source_group("dll" FILES ${SOURCES_DLLMAIN})
 
 set(EXTENSION_SOURCES ${SOURCES_DLLMAIN} ${SOURCES_EXTENSION}) # compile extension sources
-set(PLUGIN_OBJECTS $<TARGET_OBJECTS:PluginExample_Editor>) # embed plugin objects
+set(PLUGIN_OBJECTS $<TARGET_OBJECTS:PluginExample_Editor> $<TARGET_OBJECTS:PluginPlatformer_Editor>) # embed plugin objects
 
 add_library(ExtGGJ2016 SHARED ${EXTENSION_SOURCES} ${PLUGIN_OBJECTS})
 set_property(TARGET ExtGGJ2016 PROPERTY FOLDER "Editor")

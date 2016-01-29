@@ -1,4 +1,9 @@
 #include "Game.h"
+#include "..\Plugins\Platformer\CShPluginPlatformer.h"
+
+//
+// Declare plugins
+static CShPluginPlatformer plugin_platformer;
 
 void RegisterGameCallbacks(void)
 {
@@ -12,6 +17,17 @@ void RegisterGameCallbacks(void)
 	ShInput::AddOnTouchDown(Game::OnTouchDown);
 	ShInput::AddOnTouchUp(Game::OnTouchUp);
 	ShInput::AddOnTouchMove(Game::OnTouchMove);
+
+}
+
+void RegisterPlugins(void)
+{
+	//
+	// Initialize plugins
+	plugin_platformer.Initialize();
+
+	// Register plugins here
+	ShApplication::RegisterPlugin(&plugin_platformer);
 }
 
 #if SH_PC
@@ -21,6 +37,7 @@ int main(int argc, char ** argv)
 #endif
 {
 	RegisterGameCallbacks();
+	RegisterPlugins();
 
 	ShDisplayProperties displayProperties;
 
