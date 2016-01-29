@@ -1,5 +1,6 @@
 #include "CShPluginPlatformer.h"
 
+#include <Box2D/Box2D.h>
 
 BEGIN_DERIVED_CLASS(CShPluginPlatformer, CShPlugin)
 	// ...

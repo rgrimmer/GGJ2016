@@ -1,5 +1,6 @@
 set(SHINE_EDITOR_EXT_DIR "../Extensions" CACHE PATH "Extension directory")
 
+include_directories(../Box2D)
 include_directories(${SHSDK_INCLUDE_DIRS})
 
 set(SOURCES_EXTENSION Extension.cpp Extension.h)

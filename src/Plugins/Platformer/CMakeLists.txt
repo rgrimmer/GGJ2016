@@ -1,5 +1,4 @@
 
-
 include_directories(${SHSDK_INCLUDE_DIRS})
 
 set(SOURCES_PLUGIN_IMPL CShPluginPlatformer.cpp CShPluginPlatformer.h)
