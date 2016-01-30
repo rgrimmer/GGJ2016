@@ -11,6 +11,7 @@ public:
 		e_type_player = 1,			///< @todo comment
 		e_type_enemy = 2,			///< @todo comment
 		e_type_platform = 3,		///< @todo comment
+		e_type_sensor = 4,
 	};
 
 	//

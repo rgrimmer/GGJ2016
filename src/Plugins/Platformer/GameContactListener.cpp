@@ -3,9 +3,7 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*explicit*/ GameObjectEnemy::GameObjectEnemy(void)
-: GameObject(shNULL)
-, m_pEntity(shNULL)
+void GameContactListener::Initialize(CShIdentifier levelIdentifier)
 {
 
 }
@@ -13,9 +11,7 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*explicit*/ GameObjectEnemy::GameObjectEnemy(b2Body * body, ShEntity2 * pEntity)
-: GameObject(body)
-, m_pEntity(pEntity)
+void GameContactListener::Release(void)
 {
 
 }
@@ -23,7 +19,24 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ GameObjectEnemy::~GameObjectEnemy(void)
+void GameContactListener::Update(float dt)
+{
+	
+}
+
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameContactListener::BeginContact(b2Contact* contact)
+{
+	
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameContactListener::EndContact(b2Contact* contact)
 {
 
 }
@@ -31,36 +44,33 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ GameObject::EType GameObjectEnemy::GetType(void) const
+void GameContactListener::CollisionCallback(b2Contact * contact, GameObject * object)
 {
-	return(e_type_enemy);
+	b2WorldManifold worldManifold;
+	contact->GetWorldManifold(&worldManifold);
+
+	switch (object->GetType())
+	{
+		case GameObject::e_type_enemy:
+		{
+			// ...
+		}
+		break;
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameObjectEnemy::SetState(EState eState)
+void GameContactListener::PreSolve(b2Contact * contact, const b2Manifold * oldManifold)
 {
-	m_eState = eState;
+
 }
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-GameObjectEnemy::EState GameObjectEnemy::GetState(void) const
+void GameContactListener::PostSolve(b2Contact * contact, const b2ContactImpulse * impulse)
 {
-	return(m_eState);
-}
 
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-void GameObjectEnemy::Update(float dt)
-{
-	b2Vec2 vSpeed(1.0f, m_pBody->GetLinearVelocity().y);
-
-	m_pBody->SetLinearVelocity(vSpeed);
-
-	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
-	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y * RATIO_B2_SH);
 }

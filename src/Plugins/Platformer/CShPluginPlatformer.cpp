@@ -42,6 +42,11 @@ void CShPluginPlatformer::Release(void)
 	SH_ASSERT(shNULL != m_pWorld);
 
 	//
+	//Create contact listener
+	m_pContactListener = new GameContactListener();
+	m_pWorld->SetContactListener(m_pContactListener);
+
+	//
 	// Get all 2D entities
 	CShArray<ShEntity2 *> aEntities;
 	ShEntity2::GetEntity2Array(levelIdentifier, aEntities);
@@ -105,6 +110,14 @@ void CShPluginPlatformer::Release(void)
 						if (dataIdentifier == CShIdentifier("shape"))
 						{
 							ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+						}
+						else if(dataIdentifier == CShIdentifier("limit_left"))
+						{
+
+						}
+						else if(dataIdentifier == CShIdentifier("limit_right"))
+						{
+
 						}
 					}
 				}
@@ -195,7 +208,13 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
-	const CShVector2 & center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
+	CShVector2 center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
+
+	if (center.m_x < 0.0f)
+	{
+		center.m_x = 0.0f;
+	}
+
 	m_camera.Update(dt, center);
 	m_background.Update(dt, center);
 
