@@ -33,7 +33,7 @@ void GameStateMenuCredits::Release(void)
 {
 
 }
-	
+
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
@@ -73,18 +73,18 @@ void GameStateMenuCredits::Activate(void)
 {
 	CShIdentifier levelIdentifier("level_credits");
 	ShLevel::Load(CShIdentifier(levelIdentifier));
-	
+
 	ShLayer * pLayer = ShLayer::Find(CShIdentifier("layer_default"));
-	m_pTextZone = ShTextZone::Create(levelIdentifier, 
-								CShIdentifier("text"), 
-								pLayer, 
-								CShAABB2(-1000.0f, 1000.0f, -50.0f, 50.0f), 
-								CShVector3(0.0f, 0.0f, 5.0f), 
-								CShEulerAngles_ZERO, 
-								CShVector3(1.0f, 1.0f, 1.0f), 
+	m_pTextZone = ShTextZone::Create(levelIdentifier,
+								CShIdentifier("text"),
+								pLayer,
+								CShAABB2(-1000.0f, 1000.0f, -50.0f, 50.0f),
+								CShVector3(0.0f, 0.0f, 5.0f),
+								CShEulerAngles_ZERO,
+								CShVector3(1.0f, 1.0f, 1.0f),
 								ShTextZone::e_align_center_center,
 								false,
-								CShIdentifier("Futura Book_60.abc"),
+								CShIdentifier("futura_book_60.abc"),
 								CShRGBAf(1.0f,1.0f,1.0f,1.0f));
 
 	ShTextZone::SetText(m_pTextZone, CShString("aaa aaa aaaaaa aaaa"));
