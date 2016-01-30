@@ -73,11 +73,10 @@ void GameStateGame::Entered(void)
 //--------------------------------------------------------------------------------------------------
 void GameStateGame::Activate(void)
 {
-	CShIdentifier levelIdentifier("level_game");
+	Game::instance().PlaySound(Sound::e_sound_music_game);
+	ShLevel::Load(CShIdentifier("level_game"));	
 
-	ShLevel::Load(levelIdentifier);
-
-	m_pEntitySmoke = ShEntity2::Find(levelIdentifier, CShIdentifier("sprite_ggj_smoke_001"));
+	m_pEntitySmoke = ShEntity2::Find(CShIdentifier("level_game"), CShIdentifier("sprite_ggj_smoke_001"));
 	ShEntity2::SetShow(m_pEntitySmoke, false);
 
 	SetState(e_state_intro);
@@ -136,7 +135,7 @@ void GameStateGame::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 /*virtual*/ void GameStateGame::OnTouchDown(int iTouch, float positionX, float positionY)
 {
-	Game::instance().PopWithTransition();
+
 }
 
 //--------------------------------------------------------------------------------------------------

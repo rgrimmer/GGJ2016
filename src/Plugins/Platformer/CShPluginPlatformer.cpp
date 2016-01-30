@@ -87,7 +87,7 @@ void CShPluginPlatformer::Release(void)
 			if (CShIdentifier("player") == idDataSetIdentifier)
 			{
 				// Find Shape
-				ShObject * pShape = shNULL;
+				ShDummyAABB2 * pShape = shNULL;
 				{
 					int iDataCount = ShDataSet::GetDataCount(pDataSet);
 
@@ -97,7 +97,7 @@ void CShPluginPlatformer::Release(void)
 
 						if (dataIdentifier == CShIdentifier("shape"))
 						{
-							ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+							ShDataSet::GetDataValue(pDataSet, nData, (ShObject**)&pShape);
 						}
 					}
 				}
@@ -105,9 +105,16 @@ void CShPluginPlatformer::Release(void)
 				// Create body from shape
 				if (shNULL != pShape)
 				{
-					const CShVector2 & vPosition = ShObject::GetPosition2(aEntities[nEntity]);
-					const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
-					const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
+					const CShVector2 & vPosition = ShDummyAABB2::GetPosition2(pShape);
+					const CShAABB2 & aabb = ShDummyAABB2::GetAABB(pShape);
+					const CShVector2 & minPoint = aabb.GetMin();
+					const CShVector2 & maxPoint = aabb.GetMax();
+					const CShVector3 & scale = ShDummyAABB2::GetScale(pShape);
+
+					const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
+					const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
+
+					ShEntity2::SetShow(aEntities[nEntity], false);
 
 					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, GameObject::e_type_player, 255, false);
 					m_aBody.Add(pBody);
@@ -217,15 +224,35 @@ void CShPluginPlatformer::Release(void)
 		}
 	}
 
+	m_pPlayer->Initialize(levelIdentifier);
+
 	m_bPaused = false;
+
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
 {
 	SH_SAFE_DELETE(m_pPlayer);
 
+	for (int nEnemy = 0; nEnemy < m_aEnemy.GetCount(); ++nEnemy)
+	{
+		SH_SAFE_DELETE(m_aEnemy[nEnemy]);
+	}
+
 	m_aEnemy.Empty();
+
+	for (int nPlatform = 0; nPlatform < m_aPlatform.GetCount(); ++nPlatform)
+	{
+		SH_SAFE_DELETE(m_aPlatform[nPlatform]);
+	}
+
 	m_aPlatform.Empty();
+
+	for (int nSensor = 0; nSensor < m_aSensor.GetCount(); ++nSensor)
+	{
+		SH_SAFE_DELETE(m_aSensor[nSensor]);
+	}
+
 	m_aSensor.Empty();
 
 	int iBodyCount = m_aBody.GetCount();

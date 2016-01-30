@@ -74,6 +74,7 @@ public:
 	void        Pop					(void);
 	void        PushWithTransition	(EState state);
 	void        PopWithTransition	(void);
+	void		PlaySound			(Sound::ESound sound);
 
 	inline GameState * get(EState state)
 	{
