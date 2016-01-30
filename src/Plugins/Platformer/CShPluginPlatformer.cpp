@@ -36,6 +36,23 @@ void CShPluginPlatformer::Release(void)
 	m_camera.Initialize(levelIdentifier);
 	m_background.Initialize(levelIdentifier);
 
+	ShScriptTree * pScriptTree = LoadConfig(levelIdentifier);
+
+	ShScriptTreeNode * pRootNode = ShScriptTree::GetRootNode(pScriptTree);
+
+	int childCount = ShScriptTreeNode::GetChildCount(pRootNode);
+
+	for (int i = 0; i < childCount; ++i)
+	{
+		ShScriptTreeNode * pNode = ShScriptTreeNode::GetChild(pRootNode, i);
+		const CShIdentifier & identifier = ShScriptTreeNode::GetIdentifier(pNode);
+
+		if (CShIdentifier("parallax") == identifier)
+		{
+			m_background.LoadParallax(levelIdentifier, pNode);
+		}
+	}
+
 	//
 	// Create the Box2D world
 	m_pWorld = new b2World(gravity);
@@ -189,6 +206,9 @@ void CShPluginPlatformer::Release(void)
 
 	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);
+
+	m_background.Release();
+	m_camera.Release();
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayPause(const CShIdentifier & levelIdentifier)
@@ -304,4 +324,21 @@ b2Body* CShPluginPlatformer::CreateBodyBox(const CShVector2 & position, float fW
 	}
 
 	return pBody;
+}
+
+ShScriptTree * CShPluginPlatformer::LoadConfig(const CShIdentifier & levelIdentifier)
+{
+	ShScriptTree * pScriptTree = ShScriptTree::Load(CShString("level_01.xml"));
+	SH_ASSERT(shNULL != pScriptTree);
+
+	ShScriptTreeNode * pRootNode = ShScriptTree::GetRootNode(pScriptTree);
+
+	if (CShIdentifier("level") != ShScriptTreeNode::GetIdentifier(pRootNode))
+	{
+		ShScriptTree::Release(pScriptTree);
+
+		return(shNULL);
+	}
+
+	return(pScriptTree);
 }

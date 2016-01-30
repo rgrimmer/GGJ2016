@@ -19,6 +19,8 @@ public:
 	void				Initialize				(const CShIdentifier & levelIdentifier);
 	void				Release					(void);
 
+	void				LoadParallax			(const CShIdentifier & levelIdentifier, ShScriptTreeNode * pNode);
+
 	void				Update					(float	dt, const CShVector2 & center);
 
 private:

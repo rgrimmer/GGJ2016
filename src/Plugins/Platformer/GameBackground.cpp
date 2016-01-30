@@ -22,85 +22,7 @@ GameBackground::~GameBackground(void)
  */
 void GameBackground::Initialize(const CShIdentifier & levelIdentifier)
 {
-	//
-	// find the sky entity
-	{
-		Plane p0;
-
-		p0.speed = 0.0f;
-
-		ShEntity2 * pEntity = ShEntity2::Find(levelIdentifier, CShIdentifier("background"));
-		SH_ASSERT(shNULL != pEntity);
-
-		p0.aEntities.Add(pEntity);
-
-		m_aPlane.Add(p0);
-	}
-
-	//
-	// find the first plane elements
-	{
-		Plane p1;
-
-		p1.speed = -3.0f;
-
-		ShEntity2 * pEntity = ShEntity2::Find(levelIdentifier, CShIdentifier("plane_01_elmt_01"));
-		SH_ASSERT(shNULL != pEntity);
-
-		p1.aEntities.Add(pEntity);
-
-		m_aPlane.Add(p1);
-	}
-
-	//
-	// find the second plane elements
-	{
-		Plane p2;
-
-		p2.speed = -5.0f;
-
-		ShEntity2 * pEntity = ShEntity2::Find(levelIdentifier, CShIdentifier("plane_02_elmt_01"));
-		SH_ASSERT(shNULL != pEntity);
-
-		p2.aEntities.Add(pEntity);
-
-		m_aPlane.Add(p2);
-	}
-
-	//
-	// find the third plane elements
-	{
-		Plane p3;
-
-		p3.speed = -8.0f;
-
-		ShEntity2 * pEntity = ShEntity2::Find(levelIdentifier, CShIdentifier("plane_03_elmt_01"));
-		SH_ASSERT(shNULL != pEntity);
-
-		p3.aEntities.Add(pEntity);
-
-		m_aPlane.Add(p3);
-	}
-
-	//
-	// find the ground plane elements
-	{
-		Plane p4;
-
-		p4.speed = -20.0f;
-
-		ShEntity2 * pEntity1 = ShEntity2::Find(levelIdentifier, CShIdentifier("plane_04_elmt_01"));
-		SH_ASSERT(shNULL != pEntity1);
-
-		p4.aEntities.Add(pEntity1);
-
-		ShEntity2 * pEntity2 = ShEntity2::Find(levelIdentifier, CShIdentifier("plane_04_elmt_02"));
-		SH_ASSERT(shNULL != pEntity2);
-
-		p4.aEntities.Add(pEntity2);
-
-		m_aPlane.Add(p4);
-	}
+	// ...
 }
 
 /**
@@ -110,6 +32,43 @@ void GameBackground::Release(void)
 {
 	m_fLastPosX = 0.0f;
 	m_aPlane.Empty();
+}
+
+/**
+ * @brief GameBackground::LoadParallax
+ * @param pNode
+ */
+void GameBackground::LoadParallax(const CShIdentifier & levelIdentifier, ShScriptTreeNode * pNode)
+{
+	int planeCount = ShScriptTreeNode::GetChildCount(pNode);
+
+	m_aPlane.SetCount(planeCount);
+
+	for (int i = 0; i < planeCount; ++i)
+	{
+		ShScriptTreeNode * pPlaneNode = ShScriptTreeNode::GetChild(pNode, i);
+		const CShIdentifier & planeIdentifier = ShScriptTreeNode::GetIdentifier(pPlaneNode);
+		SH_ASSERT(CShIdentifier("plane") == planeIdentifier);
+
+		bool success = ShScriptTreeNode::GetAttributeValueAsFloat(pPlaneNode, CShIdentifier("speed"), m_aPlane[i].speed);
+
+		int entityCount = ShScriptTreeNode::GetChildCount(pPlaneNode);
+
+		m_aPlane[i].aEntities.SetCount(entityCount);
+
+		for (int j = 0; j < entityCount; ++j)
+		{
+			ShScriptTreeNode * pEntityNode = ShScriptTreeNode::GetChild(pPlaneNode, j);
+			const CShIdentifier & entityIdentifier = ShScriptTreeNode::GetIdentifier(pEntityNode);
+			SH_ASSERT(CShIdentifier("entity") == entityIdentifier);
+
+			CShString strIdentifier;
+			bool success = ShScriptTreeNode::GetAttributeValueAsString(pEntityNode, CShIdentifier("identifier"), strIdentifier);
+
+			m_aPlane[i].aEntities[j] = ShEntity2::Find(levelIdentifier, CShIdentifier(strIdentifier));
+			SH_ASSERT(shNULL != m_aPlane[i].aEntities[j]);
+		}
+	}
 }
 
 /**
