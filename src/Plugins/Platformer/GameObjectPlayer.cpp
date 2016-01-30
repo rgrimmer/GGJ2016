@@ -280,7 +280,7 @@ void GameObjectPlayer::Update(float dt)
 			if (CheckAction(e_action_jump))
 			{
 				m_pBody->SetAwake(true);
-				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 2000.0f), m_pBody->GetPosition(), false);
+				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 1300.0f), m_pBody->GetPosition(), false);
 
 				m_eJumpState = e_jump_state_simple;
 
@@ -294,7 +294,7 @@ void GameObjectPlayer::Update(float dt)
 			if (CheckAction(e_action_jump))
 			{
 				m_pBody->SetAwake(true);
-				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 2000.0f), m_pBody->GetPosition(), false);
+				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 1300.0f), m_pBody->GetPosition(), false);
 
 				m_eJumpState = e_jump_state_double;
 

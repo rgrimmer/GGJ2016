@@ -256,6 +256,34 @@ void CShPluginPlatformer::Release(void)
 					m_aPike.Add(new GameObjectPike(pBody, aEntities[nEntity]));
 				}
 			}
+			else if(CShIdentifier("rock") == idDataSetIdentifier)
+			{
+				ShDummyAABB2 * pShape = shNULL;
+				{
+					int iDataCount = ShDataSet::GetDataCount(pDataSet);
+
+					for (int nData = 0; nData < iDataCount; ++nData)
+					{
+						const CShIdentifier & dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+
+						if (dataIdentifier == CShIdentifier("circle"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, (ShObject**)&pShape);
+						}
+					}
+				}
+
+				if (shNULL != pShape)
+				{
+					ShDummyCircle * pCircle = (ShDummyCircle *)pShape;
+
+					const CShVector2 & vPosition = ShDummyCircle::GetPosition2(pCircle);
+
+					b2Body * pBody = CreateBodyCircle(vPosition, ShDummyCircle::GetCircle(pCircle).GetRadius(), b2_dynamicBody, GameObject::e_type_rock, GameObject::e_type_player, false, false);
+					m_aBody.Add(pBody);
+					m_aRock.Add(new GameObjectRock(pBody, aEntities[nEntity]));
+				}
+			}
 		}
 	}
 
@@ -290,6 +318,20 @@ void CShPluginPlatformer::Release(void)
 	}
 
 	m_aSensor.Empty();
+
+	for (int nPike = 0; nPike < m_aPike.GetCount(); ++nPike)
+	{
+		SH_SAFE_DELETE(m_aPike[nPike]);
+	}
+
+	m_aPike.Empty();
+
+	for (int nRock = 0; nRock < m_aRock.GetCount(); ++nRock)
+	{
+		SH_SAFE_DELETE(m_aRock[nRock]);
+	}
+
+	m_aRock.Empty();
 
 	int iBodyCount = m_aBody.GetCount();
 	for (int nBody = 0; nBody < iBodyCount; ++nBody)

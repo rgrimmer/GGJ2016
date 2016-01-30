@@ -14,6 +14,7 @@
 #include "GameObjectPlatform.h"
 #include "GameObjectSensor.h"
 #include "GameObjectPike.h"
+#include "GameObjectRock.h"
 
 #include "GameContactListener.h"
 
@@ -84,6 +85,7 @@ protected:
 	CShArray<GameObjectEnemy *>		m_aEnemy;
 	CShArray<GameObjectPlatform *>	m_aPlatform;
 	CShArray<GameObjectSensor *>	m_aSensor;
+	CShArray<GameObjectRock *>		m_aRock;
 
 	GameCamera m_camera;
 	GameBackground m_background;
