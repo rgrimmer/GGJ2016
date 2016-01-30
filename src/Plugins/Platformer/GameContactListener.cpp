@@ -35,12 +35,12 @@ void GameContactListener::BeginContact(b2Contact* contact)
 
 	if (NULL != objectA)
 	{
-		CollisionCallback(contact, objectA);
+		CollisionStart(contact, objectA);
 	}
 	
 	if (NULL != objectB)
 	{
-		CollisionCallback(contact, objectB);
+		CollisionStart(contact, objectB);
 	}
 }
 
@@ -49,13 +49,24 @@ void GameContactListener::BeginContact(b2Contact* contact)
 //--------------------------------------------------------------------------------------------------
 void GameContactListener::EndContact(b2Contact* contact)
 {
+	GameObject * objectA = static_cast<GameObject *>(contact->GetFixtureA()->GetBody()->GetUserData());
+	GameObject * objectB = static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData());
 
+	if (NULL != objectA)
+	{
+		CollisionEnd(contact, objectA);
+	}
+	
+	if (NULL != objectB)
+	{
+		CollisionEnd(contact, objectB);
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameContactListener::CollisionCallback(b2Contact * contact, GameObject * object)
+void GameContactListener::CollisionStart(b2Contact * contact, GameObject * object)
 {
 	b2WorldManifold worldManifold;
 	contact->GetWorldManifold(&worldManifold);
@@ -72,6 +83,50 @@ void GameContactListener::CollisionCallback(b2Contact * contact, GameObject * ob
 			{
 				static_cast<GameObjectEnemy *>(object)->ToggleDirection();
 			}
+		}
+		break;
+
+		case GameObject::e_type_pike:
+		{
+			if (static_cast<GameObject *>(contact->GetFixtureA()->GetBody()->GetUserData())->GetType() == GameObject::e_type_player)
+			{
+				static_cast<GameObjectPike *>(object)->Start();
+			}
+			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_player)
+			{
+				static_cast<GameObjectPike *>(object)->Start();
+			}		
+		}
+		break;
+
+		case GameObject::e_type_sensor:
+		{
+
+		}
+		break;
+	}
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameContactListener::CollisionEnd(b2Contact * contact, GameObject * object)
+{
+	b2WorldManifold worldManifold;
+	contact->GetWorldManifold(&worldManifold);
+
+	switch (object->GetType())
+	{
+		case GameObject::e_type_pike:
+		{
+			if (static_cast<GameObject *>(contact->GetFixtureA()->GetBody()->GetUserData())->GetType() == GameObject::e_type_player)
+			{
+				static_cast<GameObjectPike *>(object)->End();
+			}
+			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_player)
+			{
+				static_cast<GameObjectPike *>(object)->End();
+			}		
 		}
 		break;
 

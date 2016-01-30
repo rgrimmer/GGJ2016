@@ -16,8 +16,8 @@ public:
 	virtual void	PreSolve			(b2Contact * contact, const b2Manifold * oldManifold);
 	virtual void	PostSolve			(b2Contact * contact, const b2ContactImpulse * impulse);
 
-	void			CollisionCallback	(b2Contact * contact, GameObject * object);
-
+	void			CollisionStart		(b2Contact * contact, GameObject * object);
+	void			CollisionEnd		(b2Contact * contact, GameObject * object);
 private:
 
 	CShIdentifier						m_levelIdentifier;

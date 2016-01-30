@@ -134,7 +134,7 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 			CShVector3(1.0f,1.0f,1.0f));
 
 		ShEntity2::SetShow(m_aAnimationEntity[e_animation_idle][i], false);
-		ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_idle][i]);
+		//ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_idle][i]);
 	}
 
 	m_aAnimationEntity[e_animation_run].SetCount(ANIMATION_RUN_COUNT);
@@ -151,7 +151,7 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 			CShVector3(1.0f,1.0f,1.0f));
 
 		ShEntity2::SetShow(m_aAnimationEntity[e_animation_run][i], false);
-		ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_run][i]);
+		//ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_run][i]);
 	}
 
 	m_eCurrentAnimation = e_animation_idle;
@@ -267,12 +267,6 @@ void GameObjectPlayer::Update(float dt)
 		case e_state_move_right:
 		{
 			vSpeed.x = PLAYER_SPEED;
-		}
-		break;
-
-		case e_state_jump:
-		{
-
 		}
 		break;
 	}
