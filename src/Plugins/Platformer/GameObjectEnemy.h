@@ -23,6 +23,8 @@ public:
 
 	void				Update						(float dt);
 
+	void				ToggleDirection				(void);
+
 	virtual EType		GetType						(void) const;
 
 protected:
@@ -39,4 +41,5 @@ public:
 
 	EState				m_eState;				///< @todo comment
 	ShEntity2*			m_pEntity;				///< @todo comment
+	int					m_iDirection;			///< @todo comment
 };

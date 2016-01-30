@@ -30,7 +30,18 @@ void GameContactListener::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 void GameContactListener::BeginContact(b2Contact* contact)
 {
+	GameObject * objectA = static_cast<GameObject *>(contact->GetFixtureA()->GetBody()->GetUserData());
+	GameObject * objectB = static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData());
+
+	if (NULL != objectA)
+	{
+		CollisionCallback(contact, objectA);
+	}
 	
+	if (NULL != objectB)
+	{
+		CollisionCallback(contact, objectB);
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -53,7 +64,20 @@ void GameContactListener::CollisionCallback(b2Contact * contact, GameObject * ob
 	{
 		case GameObject::e_type_enemy:
 		{
-			// ...
+			if (static_cast<GameObject *>(contact->GetFixtureA()->GetBody()->GetUserData())->GetType() == GameObject::e_type_sensor)
+			{
+				static_cast<GameObjectEnemy *>(object)->ToggleDirection();
+			}
+			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_sensor)
+			{
+				static_cast<GameObjectEnemy *>(object)->ToggleDirection();
+			}
+		}
+		break;
+
+		case GameObject::e_type_sensor:
+		{
+
 		}
 		break;
 	}
