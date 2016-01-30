@@ -19,8 +19,13 @@
 #define RATIO_B2_SH 200.0f
 #define convert_Sh_b2(a) (b2Vec2(a.m_x/RATIO_B2_SH, a.m_y/RATIO_B2_SH))
 
-#define DISPLAY_WIDTH 1920
-#define DISPLAY_HEIGHT 1080
+#if SH_EDITOR
+#	define DISPLAY_WIDTH (1920*6)
+#	define DISPLAY_HEIGHT (1080*6)
+#else
+#	define DISPLAY_WIDTH (1920)
+#	define DISPLAY_HEIGHT (1080)
+#endif // SH_EDITOR
 
 class CShPluginPlatformer : public CShPlugin
 {

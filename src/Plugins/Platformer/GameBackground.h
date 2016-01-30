@@ -9,6 +9,7 @@ public:
 	{
 		float speed;
 		CShArray<ShEntity2 *> aEntities;
+		float totalWidth;
 	};
 
 	//

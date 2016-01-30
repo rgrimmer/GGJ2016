@@ -52,6 +52,8 @@ void GameBackground::LoadParallax(const CShIdentifier & levelIdentifier, ShScrip
 
 		bool success = ShScriptTreeNode::GetAttributeValueAsFloat(pPlaneNode, CShIdentifier("speed"), m_aPlane[i].speed);
 
+		m_aPlane[i].totalWidth = 0.0f;
+
 		int entityCount = ShScriptTreeNode::GetChildCount(pPlaneNode);
 
 		m_aPlane[i].aEntities.SetCount(entityCount);
@@ -67,6 +69,8 @@ void GameBackground::LoadParallax(const CShIdentifier & levelIdentifier, ShScrip
 
 			m_aPlane[i].aEntities[j] = ShEntity2::Find(levelIdentifier, CShIdentifier(strIdentifier));
 			SH_ASSERT(shNULL != m_aPlane[i].aEntities[j]);
+
+			m_aPlane[i].totalWidth += ShEntity2::GetWidth(m_aPlane[i].aEntities[j]) * ShEntity2::GetScale(m_aPlane[i].aEntities[j]).m_x;
 		}
 	}
 }
@@ -77,7 +81,6 @@ void GameBackground::LoadParallax(const CShIdentifier & levelIdentifier, ShScrip
  */
 void GameBackground::Update(float dt, const CShVector2 & center)
 {
-	float speed = 0.0f;
 	float translation = center.m_x - m_fLastPosX;
 
 	int planeCount = m_aPlane.GetCount();
@@ -86,14 +89,32 @@ void GameBackground::Update(float dt, const CShVector2 & center)
 	{
 		Plane & plane = m_aPlane[i];
 
-		speed += plane.speed;
-
 		int entityCount = plane.aEntities.GetCount();
 
 		for (int j = 0; j < entityCount; ++j)
 		{
+			float translationValue = translation + plane.speed * 0.01f * translation;
+
 			ShEntity2 * pEntity = plane.aEntities[j];
-			ShEntity2::Translate(pEntity, CShVector3(translation + speed * dt * translation, 0.0f, 0.0f));
+			ShEntity2::Translate(pEntity, CShVector3(translationValue, 0.0f, 0.0f));
+
+			float halfWidth = ShEntity2::GetWidth(pEntity) * ShEntity2::GetScale(pEntity).m_x * 0.5f;
+			const CShVector2 & pos = ShEntity2::GetPosition2(pEntity);
+
+			if (translationValue > 0.0f)
+			{
+				if ((pos.m_x + halfWidth) < (center.m_x - DISPLAY_WIDTH * 0.5f)) // right side of the image out of screen ?
+				{
+					ShEntity2::Translate(pEntity, CShVector3(-plane.totalWidth, 0.0f, 0.0f));
+				}
+			}
+			else
+			{
+				if ((pos.m_x - halfWidth) > (center.m_x + DISPLAY_WIDTH * 0.5f)) // left side of the image out of screen ?
+				{
+					ShEntity2::Translate(pEntity, CShVector3(plane.totalWidth, 0.0f, 0.0f));
+				}
+			}
 		}
 	}
 
