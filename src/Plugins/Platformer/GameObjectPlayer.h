@@ -7,12 +7,19 @@ class GameObjectPlayer : public GameObject
 
 public:
 
-	enum EInput
+	enum EAction
 	{
-		e_input_move_left,
-		e_input_move_right,
-		e_input_jump,
-		e_input_max
+		e_action_move_left,
+		e_action_move_right,
+		e_action_jump,
+		e_action_max
+	};
+
+	struct ActionBinding
+	{
+		CShArray<ShInput*> m_aKeyInputs;
+		CShArray<ShInput*> m_aLeftJoystickInputs;
+		CShArray<ShInput*> m_aRightJoystickInputs;
 	};
 
 	enum EState
@@ -32,6 +39,8 @@ public:
 
 	virtual EType		GetType						(void) const;
 
+	bool				CheckAction					(EAction eAction) const;
+
 protected:
 
 private:
@@ -44,6 +53,7 @@ private:
 public:
 
 	EState				m_eState;				///< @todo comment
-	ShEntity2*			m_pEntity;				///< @todo comment
-	ShInput *			m_aInputs[e_input_max]; ///< @todo comment
+	ShEntity2 *			m_pEntity;				///< @todo comment
+
+	ActionBinding		m_aActions [e_action_max];
 };
