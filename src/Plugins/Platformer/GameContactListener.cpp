@@ -68,7 +68,7 @@ void GameContactListener::CollisionCallback(b2Contact * contact, GameObject * ob
 			{
 				static_cast<GameObjectEnemy *>(object)->ToggleDirection();
 			}
-			else
+			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_sensor)
 			{
 				static_cast<GameObjectEnemy *>(object)->ToggleDirection();
 			}

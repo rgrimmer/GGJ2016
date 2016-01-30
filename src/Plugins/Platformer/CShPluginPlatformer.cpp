@@ -114,7 +114,7 @@ void CShPluginPlatformer::Release(void)
 						{
 							ShDataSet::GetDataValue(pDataSet, nData, &pShape);
 						}
-						else if(dataIdentifier == CShIdentifier("limit_left"))
+						else if(dataIdentifier == CShIdentifier("Limit_left"))
 						{
 							ShDataSet::GetDataValue(pDataSet, nData, &pCollisionSegmentLeft);
 
@@ -200,23 +200,9 @@ void CShPluginPlatformer::Release(void)
 {
 	SH_SAFE_DELETE(m_pPlayer);
 
-	int iEnemyCount = m_aEnemy.GetCount();
-	for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
-	{
-		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy];
-		SH_SAFE_DELETE(pEnemy);
-	}
-
 	m_aEnemy.Empty();
-
-	int iPlatformCount = m_aPlatform.GetCount();
-	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
-	{
-		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
-		SH_SAFE_DELETE(pPlatform);
-	}
-
 	m_aPlatform.Empty();
+	m_aSensor.Empty();
 
 	int iBodyCount = m_aBody.GetCount();
 	for (int nBody = 0; nBody < iBodyCount; ++nBody)
@@ -224,8 +210,6 @@ void CShPluginPlatformer::Release(void)
 		b2Body* pBody = m_aBody[nBody];
 		m_pWorld->DestroyBody(pBody);
 	}
-
-
 
 	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);
@@ -249,7 +233,7 @@ void CShPluginPlatformer::Release(void)
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
 	CShVector2 center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
-	
+
 	if (center.m_x < 0.0f)
 	{
 		center.m_x = 0.0f;
@@ -287,8 +271,8 @@ b2Body* CShPluginPlatformer::CreateBodySegment(const CShVector2 & point1, const 
 		b2BodyDef bd;
 		bd.bullet = isBullet;
 		bd.type = type;
-		bd.position.x = point1.m_x / RATIO_B2_SH;
-		bd.position.y = 0.0f;
+	//	bd.position.x = point1.m_x / RATIO_B2_SH;
+	//	bd.position.y = 0.0f;
 		pBody = m_pWorld->CreateBody(&bd);
 	}
 

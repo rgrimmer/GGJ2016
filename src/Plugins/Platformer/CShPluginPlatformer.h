@@ -57,6 +57,7 @@ protected:
 
 	GameContactListener *			m_pContactListener;
 	GameObjectPlayer *				m_pPlayer;
+
 	CShArray<GameObjectEnemy *>		m_aEnemy;
 	CShArray<GameObjectPlatform *>	m_aPlatform;
 	CShArray<GameObjectSensor *>	m_aSensor;
