@@ -27,6 +27,13 @@ class CShPluginPlatformer : public CShPlugin
 
 public:
 
+	enum EState
+	{
+		e_state_intro,
+		e_state_smoke,
+		e_state_play
+	};
+
 								CShPluginPlatformer			(void);
 	virtual						~CShPluginPlatformer			(void);
 
@@ -40,6 +47,9 @@ public:
 
 	virtual	void				OnPreUpdate					(void);
 	virtual	void				OnPostUpdate				(float dt);
+
+
+	void						SetState					(EState state);
 
 	DECLARE_VARIABLES();
 
@@ -65,4 +75,7 @@ protected:
 	GameCamera m_camera;
 	GameBackground m_background;
 
+	EState							m_eState;
+	float							m_fStateTime;
+	ShEntity2*						m_pEntitySmoke;
 };

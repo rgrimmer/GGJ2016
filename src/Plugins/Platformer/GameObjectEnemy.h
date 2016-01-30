@@ -38,7 +38,7 @@ protected:
 
 private:
 public:
-
+	ShPrefab *			m_pPrefab;				///< @todo comment
 	EState				m_eState;				///< @todo comment
 	ShEntity2*			m_pEntity;				///< @todo comment
 	int					m_iDirection;			///< @todo comment
