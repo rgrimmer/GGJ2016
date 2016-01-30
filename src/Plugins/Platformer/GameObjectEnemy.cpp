@@ -6,6 +6,7 @@
 /*explicit*/ GameObjectEnemy::GameObjectEnemy(b2Body * body, ShEntity2 * pEntity)
 : GameObject(body)
 , m_pEntity(pEntity)
+, m_iDirection(1)
 {
 
 }
@@ -47,10 +48,18 @@ GameObjectEnemy::EState GameObjectEnemy::GetState(void) const
 //--------------------------------------------------------------------------------------------------
 void GameObjectEnemy::Update(float dt)
 {
-	b2Vec2 vSpeed(1.0f, m_pBody->GetLinearVelocity().y);
+	b2Vec2 vSpeed(m_iDirection * 1.0f, m_pBody->GetLinearVelocity().y);
 
 	m_pBody->SetLinearVelocity(vSpeed);
 
 	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
 	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y * RATIO_B2_SH);
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameObjectEnemy::ToggleDirection(void)
+{
+	m_iDirection *= -1;
 }

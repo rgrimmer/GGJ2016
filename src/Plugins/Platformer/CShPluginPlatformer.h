@@ -45,8 +45,9 @@ public:
 
 private:
 
-	b2Body * CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
-	b2Body * CreateBodyBox(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isSensor);
+	b2Body *	CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
+	b2Body *	CreateBodyBox(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isSensor);
+	b2Body*		CreateBodySegment(const CShVector2 & p1, const CShVector2 & p2, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
 
 protected:
 
@@ -58,6 +59,7 @@ protected:
 	GameObjectPlayer *				m_pPlayer;
 	CShArray<GameObjectEnemy *>		m_aEnemy;
 	CShArray<GameObjectPlatform *>	m_aPlatform;
+	CShArray<GameObjectSensor *>	m_aSensor;
 
 	GameCamera m_camera;
 	GameBackground m_background;

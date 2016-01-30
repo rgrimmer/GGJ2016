@@ -100,6 +100,9 @@ void CShPluginPlatformer::Release(void)
 			{
 				// Find Shape
 				ShObject * pShape = shNULL;
+				ShObject * pCollisionSegmentLeft = shNULL;
+				ShObject * pCollisionSegmentRight = shNULL;
+
 				{
 					int iDataCount = ShDataSet::GetDataCount(pDataSet);
 
@@ -113,11 +116,31 @@ void CShPluginPlatformer::Release(void)
 						}
 						else if(dataIdentifier == CShIdentifier("limit_left"))
 						{
+							ShDataSet::GetDataValue(pDataSet, nData, &pCollisionSegmentLeft);
 
+							b2Body* pBody = CreateBodySegment(ShCollisionSegment::GetP1((ShCollisionSegment*)pCollisionSegmentLeft), 
+																ShCollisionSegment::GetP2((ShCollisionSegment*)pCollisionSegmentLeft),
+																b2_staticBody,
+																GameObject::e_type_sensor,
+																GameObject::e_type_enemy,
+																false,
+																true);
+
+							m_aSensor.Add(new GameObjectSensor(pBody));
 						}
-						else if(dataIdentifier == CShIdentifier("limit_right"))
+						else if(dataIdentifier == CShIdentifier("Limit_right"))
 						{
+							ShDataSet::GetDataValue(pDataSet, nData, &pCollisionSegmentRight);
 
+							b2Body* pBody = CreateBodySegment(ShCollisionSegment::GetP1((ShCollisionSegment*)pCollisionSegmentRight), 
+																ShCollisionSegment::GetP2((ShCollisionSegment*)pCollisionSegmentRight),
+																b2_staticBody,
+																GameObject::e_type_sensor,
+																GameObject::e_type_enemy,
+																false,
+																true);
+
+							m_aSensor.Add(new GameObjectSensor(pBody));
 						}
 					}
 				}
@@ -254,6 +277,45 @@ void CShPluginPlatformer::Release(void)
 		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
 		pPlatform->Update(dt);
 	}
+}
+
+b2Body* CShPluginPlatformer::CreateBodySegment(const CShVector2 & point1, const CShVector2 & point2, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)
+{
+	// Create Body
+	b2Body * pBody = NULL;
+	{
+		b2BodyDef bd;
+		bd.bullet = isBullet;
+		bd.type = type;
+		bd.position.x = point1.m_x / RATIO_B2_SH;
+		bd.position.y = 0.0f;
+		pBody = m_pWorld->CreateBody(&bd);
+	}
+
+	{
+		// Create Shape
+		b2EdgeShape shape;
+		b2Vec2 p1, p2;
+
+		p1.x = point1.m_x / RATIO_B2_SH;
+		p1.y = point1.m_x / RATIO_B2_SH;
+
+		p2.x = point2.m_x / RATIO_B2_SH;
+		p2.y = point2.m_y / RATIO_B2_SH;
+		shape.Set(p1, p2);
+
+		// Associate Shape to Body
+		b2FixtureDef fd;
+		fd.shape = &shape;
+		fd.density = 100.0f;
+		fd.filter.categoryBits = categoryBits;
+		fd.filter.maskBits = maskBits;
+		fd.isSensor = isSensor;
+
+		pBody->CreateFixture(&fd);
+	}
+
+	return(pBody);
 }
 
 b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)
