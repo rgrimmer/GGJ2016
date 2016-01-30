@@ -5,6 +5,12 @@ class GameBackground
 
 public:
 
+	struct Plane
+	{
+		float speed;
+		CShArray<ShEntity2 *> aEntities;
+	};
+
 	//
 	// Construction / Destruction
 	explicit			GameBackground			(void);
@@ -17,5 +23,9 @@ public:
 
 private:
 
-	ShEntity2 * m_pBackgroundEntity;
+	float				m_fLastPosX;
+
+	ShEntity2 *			m_pBackgroundEntity;
+
+	CShArray<Plane>		m_aPlane;
 };
