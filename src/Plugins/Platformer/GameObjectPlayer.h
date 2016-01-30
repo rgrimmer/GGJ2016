@@ -49,6 +49,7 @@ public:
 	virtual				~GameObjectPlayer			(void);
 
 	void				Initialize					(const CShIdentifier & levelIdentifier);
+	void				Release						(void);
 
 	void				Update						(float dt);
 

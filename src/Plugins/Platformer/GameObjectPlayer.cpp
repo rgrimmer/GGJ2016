@@ -112,42 +112,47 @@
 
 }
 
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
 void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 {
 	m_iCurrentAnimation = 0;
 
+	char szEntityName[1024];
 
-	if (m_aAnimationEntity[e_animation_idle].GetCount() > 0)
+	for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
 	{
-		m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
-		return;
-	}
+		sprintf(szEntityName, "player_anim_idle_%d", i);
 
-	//idle
-	{
-		char szEntityName[1024];
+		ShEntity2* pEntity = ShEntity2::Create(levelIdentifier,
+			CShIdentifier(GID(NULL)),
+			CShIdentifier("layer_default"),
+			CShIdentifier("ggj"),
+			CShIdentifier(szEntityName),
+			CShVector3(0.0f,0.0f, 15.0f),
+			CShEulerAngles_ZERO,
+			CShVector3(1.0f,1.0f,1.0f));
 
-		for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
-		{
-			sprintf(szEntityName, "player_anim_idle_%d", i);
+		ShEntity2::SetShow(pEntity, false);
+		ShEntity2::SetPivotBottomCenter(pEntity);
 
-			ShEntity2* pEntity = ShEntity2::Create(levelIdentifier,
-				CShIdentifier(GID(NULL)),
-				CShIdentifier("layer_default"),
-				CShIdentifier("ggj"),
-				CShIdentifier(szEntityName),
-				CShVector3(0.0f,0.0f, 15.0f),
-				CShEulerAngles_ZERO,
-				CShVector3(1.0f,1.0f,1.0f));
-
-			ShEntity2::SetShow(pEntity, false);
-			ShEntity2::SetPivotBottomCenter(pEntity);
-
-			m_aAnimationEntity[e_animation_idle].Add(pEntity);
-		}
+		m_aAnimationEntity[e_animation_idle].Add(pEntity);
 	}
 
 	m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameObjectPlayer::Release(void)
+{
+	for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
+	{
+		ShObject::DestroyObject(m_aAnimationEntity[e_animation_idle][i]);
+		m_aAnimationEntity[e_animation_idle][i] = shNULL;
+	}
 }
 
 //--------------------------------------------------------------------------------------------------

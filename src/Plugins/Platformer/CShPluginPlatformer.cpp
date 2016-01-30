@@ -232,6 +232,7 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
 {
+	m_pPlayer->Release();
 	SH_SAFE_DELETE(m_pPlayer);
 
 	for (int nEnemy = 0; nEnemy < m_aEnemy.GetCount(); ++nEnemy)
