@@ -38,6 +38,7 @@ public:
 	void				Update						(float dt);
 
 	virtual EType		GetType						(void) const;
+	ShEntity2 *			GetEntity					(void) const;
 
 	bool				CheckAction					(EAction eAction) const;
 

@@ -208,3 +208,8 @@ void GameObjectPlayer::Update(float dt)
 	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
 	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y * RATIO_B2_SH);
 }
+
+ShEntity2 * GameObjectPlayer::GetEntity(void) const
+{
+	return m_pEntity;
+}
