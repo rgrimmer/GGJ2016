@@ -37,18 +37,20 @@ void CShPluginPlatformer::Release(void)
 	gravity.Set(0.0f, -9.8f);
 	m_pWorld = new b2World(gravity);
 
-	b2Body *pBody = shNULL;
+	//
+	// Get all 2D entities
 	CShArray<ShEntity2 *> aEntities;
-
 	ShEntity2::GetEntity2Array(levelIdentifier, aEntities);
 
+	//
+	// Loop through all entities
 	int nEntityCount = aEntities.GetCount();
 	for (int nEntity = 0; nEntity < nEntityCount; ++nEntity)
 	{
 		int iDataSetCount = ShObject::GetDataSetCount(aEntities[nEntity]);
 
 		//
-		//Generate all body
+		// Generate all body
 		for (int nDataSet = 0; nDataSet < iDataSetCount; ++nDataSet)
 		{
 			ShDataSet * pDataSet = ShObject::GetDataSet(aEntities[nEntity], nDataSet);
@@ -57,89 +59,101 @@ void CShPluginPlatformer::Release(void)
 
 			if (CShIdentifier("player") == idDataSetIdentifier)
 			{
-				int iDataCount = ShDataSet::GetDataCount(pDataSet);
-
-				ShObject* pShape = shNULL;
-				const CShVector2 vPosition = ShObject::GetPosition2(aEntities[nEntity]);
-				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
-				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
-				const b2BodyType b2Type = b2_dynamicBody;
-				const int iCategoryBits = GameObject::e_type_player;
-				const int iMaskBits = 255;
-				const bool isSensor = false;
-
-				for (int nData = 0; nData < iDataCount; ++nData)
+				// Find Shape
+				ShObject * pShape = shNULL;
 				{
-					CShIdentifier dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+					int iDataCount = ShDataSet::GetDataCount(pDataSet);
 
-					if (dataIdentifier == CShIdentifier("shape"))
+					for (int nData = 0; nData < iDataCount; ++nData)
 					{
-						ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+						CShIdentifier dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+
+						if (dataIdentifier == CShIdentifier("shape"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+						}
 					}
 				}
 
-				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
-				m_aBody.Add(pBody);
-				m_pPlayer = new GameObjectPlayer(pBody, aEntities[nEntity]);
+				// Create body from shape
+				if (shNULL != pShape)
+				{
+					const CShVector2 & vPosition = ShObject::GetPosition2(aEntities[nEntity]);
+					const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
+					const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
+
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, GameObject::e_type_player, 255, false);
+					m_aBody.Add(pBody);
+					m_pPlayer = new GameObjectPlayer(pBody, aEntities[nEntity]);
+				}
 			}
 			else if(CShIdentifier("enemy") == idDataSetIdentifier)
 			{
-				int iDataCount = ShDataSet::GetDataCount(pDataSet);
-
-				ShObject* pShape = shNULL;
-				const CShVector2 vPosition = ShObject::GetPosition2(aEntities[nEntity]);
-				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
-				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
-				const b2BodyType b2Type = b2_dynamicBody;
-				const int iCategoryBits = GameObject::e_type_enemy;
-				const int iMaskBits = 255;
-				const bool isSensor = false;
-
-				for (int nData = 0; nData < iDataCount; ++nData)
+				// Find Shape
+				ShObject * pShape = shNULL;
 				{
-					CShIdentifier dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+					int iDataCount = ShDataSet::GetDataCount(pDataSet);
 
-					if (dataIdentifier == CShIdentifier("shape"))
+					for (int nData = 0; nData < iDataCount; ++nData)
 					{
-						ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+						CShIdentifier dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+
+						if (dataIdentifier == CShIdentifier("shape"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+						}
 					}
 				}
 
-				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
-				m_aBody.Add(pBody);
-				m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
+				// Create body from shape
+				if (shNULL != pShape)
+				{
+					const CShVector2 & vPosition = ShObject::GetPosition2(aEntities[nEntity]);
+					const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
+					const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
+
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, GameObject::e_type_enemy, 255, false);
+					m_aBody.Add(pBody);
+					//m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
+				}
 			}
 			else if (CShIdentifier("platform") == idDataSetIdentifier)
 			{
-				int iDataCount = ShDataSet::GetDataCount(pDataSet);
-				ShObject* pShape = shNULL;
-				const CShVector2 vPosition = ShObject::GetPosition2(aEntities[nEntity]);
-				const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
-				const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
-				const b2BodyType b2Type = b2_staticBody;
-				const int iCategoryBits = GameObject::e_type_platform;
-				const int iMaskBits = 255;
-				const bool isSensor = false;
-
-				for (int nData = 0; nData < iDataCount; ++nData)
+				// Find AABB2
+				ShDummyAABB2 * pShape = shNULL;
 				{
-					CShIdentifier dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+					int iDataCount = ShDataSet::GetDataCount(pDataSet);
 
-					if (dataIdentifier == CShIdentifier("shape"))
+					for (int nData = 0; nData < iDataCount; ++nData)
 					{
-						ShDataSet::GetDataValue(pDataSet, nData, &pShape);
+						const CShIdentifier & dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+
+						if (dataIdentifier == CShIdentifier("box"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, (ShObject**)&pShape);
+						}
 					}
 				}
 
-				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
-				m_aBody.Add(pBody);
-				//m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
+				// Create body from AABB2
+				if (shNULL != pShape)
+				{
+					const CShVector2 & vPosition = ShDummyAABB2::GetPosition2(pShape);
+					const CShAABB2 & aabb = ShDummyAABB2::GetAABB(pShape);
+					const CShVector2 & minPoint = aabb.GetMin();
+					const CShVector2 & maxPoint = aabb.GetMax();
+					const CShVector3 & scale = ShDummyAABB2::GetScale(pShape);
+
+					const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
+					const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
+
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, GameObject::e_type_platform, 255, false);
+					m_aBody.Add(pBody);
+					//m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
+				}
 			}
 		}
 	}
-
-	SH_ASSERT(shNULL != pBody)
-	
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
@@ -149,14 +163,14 @@ void CShPluginPlatformer::Release(void)
 	int iEnemyCount = m_aEnemy.GetCount();
 	for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
 	{
-		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy]; 
+		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy];
 		SH_SAFE_DELETE(pEnemy);
 	}
 
 	int iPlatformCount = m_aPlatform.GetCount();
 	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
 	{
-		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform]; 
+		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
 		SH_SAFE_DELETE(pPlatform);
 	}
 
@@ -189,7 +203,7 @@ void CShPluginPlatformer::Release(void)
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
 	//
-	// Update the world of Box2D 
+	// Update the world of Box2D
 	m_pWorld->Step(dt, 3, 3);
 
 
@@ -198,14 +212,14 @@ void CShPluginPlatformer::Release(void)
 	int iEnemyCount = m_aEnemy.GetCount();
 	for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
 	{
-		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy]; 
+		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy];
 		pEnemy->Update(dt);
 	}
 
 	int iPlatformCount = m_aPlatform.GetCount();
 	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
 	{
-		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform]; 
+		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
 		//pPlatform->Update(dt);
 	}
 }
@@ -245,7 +259,7 @@ b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float
 	return(pBody);
 }
 
-b2Body* CShPluginPlatformer::CreateBodyShape(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isSensor)
+b2Body* CShPluginPlatformer::CreateBodyBox(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isSensor)
 {
 	b2Vec2 pos = convert_Sh_b2(position);
 
