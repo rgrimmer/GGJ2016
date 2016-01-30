@@ -14,6 +14,7 @@ public:
 
 	//
 	// Construction / Destruction
+						GameObjectEnemy				(void);
 	explicit			GameObjectEnemy				(b2Body * body, ShEntity2 * pEntity);
 	virtual				~GameObjectEnemy			(void);
 

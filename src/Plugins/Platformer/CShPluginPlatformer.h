@@ -52,8 +52,8 @@ protected:
 	CShArray<b2Body*> m_aBody;
 
 	GameObjectPlayer *				m_pPlayer;
-	CShArray<GameObjectEnemy *>		m_aEnemy;
-	CShArray<GameObjectPlatform *>	m_aPlatform;
+	CShArray<GameObjectEnemy>		m_aEnemy;
+	CShArray<GameObjectPlatform>	m_aPlatform;
 
 	GameCamera m_camera;
 	GameBackground m_background;
