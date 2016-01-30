@@ -3,7 +3,7 @@
 #define PLAYER_SPEED 3.0f
 
 #define ANIMATION_IDLE_COUNT 24
-#define ANIMATION_RUN_COUNT 12
+#define ANIMATION_RUN_COUNT 13
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
