@@ -101,19 +101,23 @@ void GameBackground::Update(float dt, const CShVector2 & center)
 			float halfWidth = ShEntity2::GetWidth(pEntity) * ShEntity2::GetScale(pEntity).m_x * 0.5f;
 			const CShVector2 & pos = ShEntity2::GetPosition2(pEntity);
 
-			if (translationValue > 0.0f)
+			if (translation > 0.0f)
 			{
 				if ((pos.m_x + halfWidth) < (center.m_x - DISPLAY_WIDTH * 0.5f)) // right side of the image out of screen ?
+				{
+					ShEntity2::Translate(pEntity, CShVector3(plane.totalWidth, 0.0f, 0.0f));
+				}
+			}
+			else if (translation < 0.0f)
+			{
+				if ((pos.m_x - halfWidth) > (center.m_x + DISPLAY_WIDTH * 0.5f)) // left side of the image out of screen ?
 				{
 					ShEntity2::Translate(pEntity, CShVector3(-plane.totalWidth, 0.0f, 0.0f));
 				}
 			}
 			else
 			{
-				if ((pos.m_x - halfWidth) > (center.m_x + DISPLAY_WIDTH * 0.5f)) // left side of the image out of screen ?
-				{
-					ShEntity2::Translate(pEntity, CShVector3(plane.totalWidth, 0.0f, 0.0f));
-				}
+
 			}
 		}
 	}
