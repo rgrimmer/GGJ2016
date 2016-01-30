@@ -31,7 +31,11 @@ void GameCamera::Initialize(const CShIdentifier & levelIdentifier)
 	ShCamera::SetNearPlaneDistance(m_pCamera, 0.001f);
 	ShCamera::SetFarPlaneDistance(m_pCamera, 200.0f);
 
+#if SH_EDITOR
+	ShCamera::SetViewport(m_pCamera, DISPLAY_WIDTH*6.0f, DISPLAY_HEIGHT*6.0f);
+#else
 	ShCamera::SetViewport(m_pCamera, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+#endif // SH_EDITOR
 
 	ShCamera::SetTarget(m_pCamera, CShVector3(0.0f, 0.0f, 0.0f));
 	ShCamera::SetPosition(m_pCamera, CShVector3(0.0f, 0.0f, 150.0f));
