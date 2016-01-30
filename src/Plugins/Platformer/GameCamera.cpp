@@ -48,7 +48,8 @@ void GameCamera::Initialize(const CShIdentifier & levelIdentifier)
 //--------------------------------------------------------------------------------------------------
 void GameCamera::Release(void)
 {
-
+	ShCamera::SetTarget(m_pCamera, CShVector3(0.0f, 0.0f, 0.0f));
+	ShCamera::SetPosition(m_pCamera, CShVector3(0.0f, 0.0f, 150.0f));
 }
 
 //--------------------------------------------------------------------------------------------------

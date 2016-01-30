@@ -2,6 +2,8 @@
 
 #define PLAYER_SPEED 1.0f
 
+#define ANIMATION_IDLE_COUNT 24
+
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
@@ -9,6 +11,8 @@
 : GameObject(body)
 , m_eJumpState(e_jump_state_none)
 , m_pEntity(pEntity)
+, m_iCurrentAnimation(0)
+, m_fAnimationTime(0.0f)
 {
 	//
 	// Action Move Left
@@ -95,6 +99,9 @@
 		m_aActions[e_action_jump].m_aKeyInputs.Add(pInput);
 #endif // SH_PC
 	}
+
+	// animations
+	
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -103,6 +110,43 @@
 /*virtual*/ GameObjectPlayer::~GameObjectPlayer(void)
 {
 
+}
+
+void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
+{
+	m_iCurrentAnimation = 0;
+
+
+	if (m_aAnimationEntity[e_animation_idle].GetCount() > 0)
+	{
+		m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
+		return;
+	}
+
+	//idle
+	{
+		char szEntityName[1024];
+
+		for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
+		{
+			sprintf(szEntityName, "player_anim_idle_%d", i);
+
+			ShEntity2* pEntity = ShEntity2::Create(levelIdentifier,
+				CShIdentifier(GID(NULL)),
+				CShIdentifier("layer_default"),
+				CShIdentifier("ggj"),
+				CShIdentifier(szEntityName),
+				CShVector3(0.0f,0.0f, 15.0f),
+				CShEulerAngles_ZERO,
+				CShVector3(1.0f,1.0f,1.0f));
+
+			ShEntity2::SetShow(pEntity, false);
+			//ShEntity2::SetPivotBottomCenter(pEntity);
+			m_aAnimationEntity[e_animation_idle].Add(pEntity);
+		}
+	}
+
+	m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -172,14 +216,38 @@ void GameObjectPlayer::Update(float dt)
 {
 	b2Vec2 vSpeed(0.0f, m_pBody->GetLinearVelocity().y);
 
-	if (CheckAction(e_action_move_left))
+	if (e_state_move_left != m_eState && CheckAction(e_action_move_left))
 	{
-		vSpeed.x = -PLAYER_SPEED;
+		SetState(e_state_move_left);
+	}
+	else if (e_state_move_right != m_eState && CheckAction(e_action_move_right))
+	{
+		SetState(e_state_move_right);
+	}
+	else if (!CheckAction(e_action_move_right) && !CheckAction(e_action_move_left) && e_state_idle != m_eState)
+	{
+		SetState(e_state_idle);
 	}
 
-	if (CheckAction(e_action_move_right))
+	switch (m_eState)
 	{
-		vSpeed.x = PLAYER_SPEED;
+		case e_state_move_left: 
+		{
+			vSpeed.x = -PLAYER_SPEED;			
+		}
+		break;
+
+		case e_state_move_right:
+		{
+			vSpeed.x = PLAYER_SPEED;	
+		}
+		break;
+
+		case e_state_jump: 
+		{
+	
+		}
+		break;
 	}
 
 	m_pBody->SetLinearVelocity(b2Vec2(vSpeed));
@@ -191,7 +259,7 @@ void GameObjectPlayer::Update(float dt)
 			if (CheckAction(e_action_jump))
 			{
 				m_pBody->SetAwake(true);
-				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 20.0f), m_pBody->GetPosition(), false);
+				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 2000.0f), m_pBody->GetPosition(), false);
 
 				m_eJumpState = e_jump_state_simple;
 
@@ -205,7 +273,7 @@ void GameObjectPlayer::Update(float dt)
 			if (CheckAction(e_action_jump))
 			{
 				m_pBody->SetAwake(true);
-				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 20.0f), m_pBody->GetPosition(), false);
+				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 2000.0f), m_pBody->GetPosition(), false);
 
 				m_eJumpState = e_jump_state_double;
 
@@ -224,13 +292,44 @@ void GameObjectPlayer::Update(float dt)
 			}
 		}
 		break;
+	}			
+
+
+
+	//update animation
+	m_fAnimationTime += dt;
+
+	ShEntity2::SetShow(m_apCurrentAnimation[m_iCurrentAnimation], false);
+
+	while (m_fAnimationTime > 0.05f)
+	{
+		m_iCurrentAnimation++;
+		m_iCurrentAnimation %= m_apCurrentAnimation.GetCount();
+		m_fAnimationTime -= 0.05f;
 	}
 
-	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
-	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y * RATIO_B2_SH);
+	ShEntity2::SetShow(m_apCurrentAnimation[m_iCurrentAnimation], true);
+
+	ShEntity2::SetPositionX(m_apCurrentAnimation[m_iCurrentAnimation], m_pBody->GetPosition().x * RATIO_B2_SH);
+	ShEntity2::SetPositionY(m_apCurrentAnimation[m_iCurrentAnimation], m_pBody->GetPosition().y * RATIO_B2_SH);
+}
+
+void GameObjectPlayer::SetState(EState state)
+{
+	ShEntity2::SetShow(m_apCurrentAnimation[m_iCurrentAnimation], false);
+	m_eState = state;
+
+	switch (m_eState)
+	{
+		case e_state_idle : 
+		{
+			m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
+		}
+		break;
+	}
 }
 
 ShEntity2 * GameObjectPlayer::GetEntity(void) const
 {
-	return m_pEntity;
+	return m_apCurrentAnimation[m_iCurrentAnimation];
 }

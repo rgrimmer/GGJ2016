@@ -70,6 +70,7 @@ void GameStateGame::Entered(void)
 //--------------------------------------------------------------------------------------------------
 void GameStateGame::Activate(void)
 {
+	Game::instance().PlaySound(Sound::e_sound_music_game);
 	ShLevel::Load(CShIdentifier("level_game"));	
 }
 
@@ -95,7 +96,7 @@ void GameStateGame::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 /*virtual*/ void GameStateGame::OnTouchDown(int iTouch, float positionX, float positionY)
 {
-	Game::instance().PopWithTransition();
+
 }
 
 //--------------------------------------------------------------------------------------------------
