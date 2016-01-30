@@ -374,7 +374,7 @@ void GameObjectPlayer::SetState(EState newState)
 			{
 				for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
 				{
-					ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, 0.0f, 180.0f));
+					ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
 				}
 			}
 		}
@@ -399,7 +399,7 @@ void GameObjectPlayer::SetState(EState newState)
 
 			for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
 			{
-				ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, 0.0f, 180.0f));
+				ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
 			}
 		}
 		break;
