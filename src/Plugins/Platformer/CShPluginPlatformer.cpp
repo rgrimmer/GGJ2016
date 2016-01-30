@@ -21,7 +21,7 @@ CShPluginPlatformer::CShPluginPlatformer(void)
 
 void CShPluginPlatformer::Initialize(void)
 {
-
+	m_camera.Initialize();
 }
 
 void CShPluginPlatformer::Release(void)
@@ -133,7 +133,7 @@ void CShPluginPlatformer::Release(void)
 
 				pBody = CreateBodyShape(vPosition, fWidth, fHeight, b2Type, iCategoryBits, iMaskBits, isSensor);
 				m_aBody.Add(pBody);
-				//m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
+				m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
 			}
 		}
 	}
@@ -206,7 +206,7 @@ void CShPluginPlatformer::Release(void)
 	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
 	{
 		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform]; 
-		//pPlatform->Update(dt);
+		pPlatform->Update(dt);
 	}
 }
 

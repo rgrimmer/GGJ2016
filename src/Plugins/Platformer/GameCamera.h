@@ -9,6 +9,8 @@ public:
 	explicit			GameCamera				(void);
 	virtual				~GameCamera				(void);
 
+	void				Initialize				(void);
+	void				Release					(void);
 protected:
 
 private:
@@ -18,5 +20,5 @@ public:
 protected:
 
 private:
-
+	ShCamera * m_pCamera;
 };
