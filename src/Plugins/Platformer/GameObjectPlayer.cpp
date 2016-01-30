@@ -124,7 +124,7 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 
 	for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
 	{
-		sprintf(szEntityName, "player_anim_idle_%d", i);
+		sprintf(szEntityName, "player_anim_idle_%02d", i);
 
 		m_aAnimationEntity[e_animation_idle][i] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
 			CShIdentifier("ggj"),
@@ -141,7 +141,7 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 
 	for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
 	{
-		sprintf(szEntityName, "player_anim_run_%d", i);
+		sprintf(szEntityName, "player_anim_run_%02d", i);
 
 		m_aAnimationEntity[e_animation_run][i] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
 			CShIdentifier("ggj"),
