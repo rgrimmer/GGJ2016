@@ -12,6 +12,7 @@
 #include "GameObjectPlayer.h"
 #include "GameObjectEnemy.h"
 #include "GameObjectPlatform.h"
+#include "GameObjectSensor.h"
 
 #include "GameContactListener.h"
 

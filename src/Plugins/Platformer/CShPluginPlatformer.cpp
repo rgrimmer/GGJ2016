@@ -111,6 +111,14 @@ void CShPluginPlatformer::Release(void)
 						{
 							ShDataSet::GetDataValue(pDataSet, nData, &pShape);
 						}
+						else if(dataIdentifier == CShIdentifier("limit_left"))
+						{
+
+						}
+						else if(dataIdentifier == CShIdentifier("limit_right"))
+						{
+
+						}
 					}
 				}
 
@@ -176,6 +184,8 @@ void CShPluginPlatformer::Release(void)
 		SH_SAFE_DELETE(pEnemy);
 	}
 
+	m_aEnemy.Empty();
+
 	int iPlatformCount = m_aPlatform.GetCount();
 	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
 	{
@@ -183,12 +193,16 @@ void CShPluginPlatformer::Release(void)
 		SH_SAFE_DELETE(pPlatform);
 	}
 
+	m_aPlatform.Empty();
+
 	int iBodyCount = m_aBody.GetCount();
 	for (int nBody = 0; nBody < iBodyCount; ++nBody)
 	{
 		b2Body* pBody = m_aBody[nBody];
 		m_pWorld->DestroyBody(pBody);
 	}
+
+
 
 	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);

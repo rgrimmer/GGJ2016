@@ -108,7 +108,7 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ GameObjectPlayer::EType GameObjectPlayer::GetType(void) const
+/*virtual*/ GameObject::EType GameObjectPlayer::GetType(void) const
 {
 	return(e_type_player);
 }

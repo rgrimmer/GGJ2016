@@ -21,7 +21,7 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*virtual*/ GameObjectEnemy::EType GameObjectEnemy::GetType(void) const
+/*virtual*/ GameObject::EType GameObjectEnemy::GetType(void) const
 {
 	return(e_type_enemy);
 }
@@ -47,5 +47,10 @@ GameObjectEnemy::EState GameObjectEnemy::GetState(void) const
 //--------------------------------------------------------------------------------------------------
 void GameObjectEnemy::Update(float dt)
 {
+	b2Vec2 vSpeed(1.0f, m_pBody->GetLinearVelocity().y);
 
+	m_pBody->SetLinearVelocity(vSpeed);
+
+	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
+	ShEntity2::SetPositionY(m_pEntity, m_pBody->GetPosition().y * RATIO_B2_SH);
 }
