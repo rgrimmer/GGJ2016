@@ -1,29 +1,21 @@
 #pragma once
 
-class GameCamera
+class GameBackground
 {
+
 public:
 
 	//
 	// Construction / Destruction
-	explicit			GameCamera				(void);
-	virtual				~GameCamera				(void);
+	explicit			GameBackground			(void);
+	virtual				~GameBackground			(void);
 
 	void				Initialize				(const CShIdentifier & levelIdentifier);
 	void				Release					(void);
 
 	void				Update					(float	dt, const CShVector2 & center);
 
-protected:
-
 private:
 
-public:
-
-protected:
-
-private:
-
-	ShCamera * m_pCamera;
-
+	ShEntity2 * m_pBackgroundEntity;
 };

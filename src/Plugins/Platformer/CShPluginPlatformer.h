@@ -6,6 +6,7 @@
 #include <Box2D/Box2D.h>
 
 #include "GameCamera.h"
+#include "GameBackground.h"
 
 #include "GameObject.h"
 #include "GameObjectPlayer.h"
@@ -46,12 +47,15 @@ private:
 
 protected:
 
-	CShArray<b2Body*> m_aBody;
 	b2World * m_pWorld;
+
+	CShArray<b2Body*> m_aBody;
 
 	GameObjectPlayer *				m_pPlayer;
 	CShArray<GameObjectEnemy *>		m_aEnemy;
 	CShArray<GameObjectPlatform *>	m_aPlatform;
 
 	GameCamera m_camera;
+	GameBackground m_background;
+
 };

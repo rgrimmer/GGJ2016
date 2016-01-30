@@ -2,6 +2,8 @@
 
 #include <Box2D/Box2D.h>
 
+static const b2Vec2 gravity(0.0f, -9.8f);
+
 BEGIN_DERIVED_CLASS(CShPluginPlatformer, CShPlugin)
 	// ...
 END_CLASS()
@@ -31,13 +33,13 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStart(const CShIdentifier & levelIdentifier)
 {
-	m_camera.Initialize();
+	m_camera.Initialize(levelIdentifier);
+	m_background.Initialize(levelIdentifier);
 
 	//
-	// Create a world with gravity
-	b2Vec2 gravity;
-	gravity.Set(0.0f, -9.8f);
+	// Create the Box2D world
 	m_pWorld = new b2World(gravity);
+	SH_ASSERT(shNULL != m_pWorld);
 
 	//
 	// Get all 2D entities
@@ -156,8 +158,6 @@ void CShPluginPlatformer::Release(void)
 			}
 		}
 	}
-
-	m_camera.FollowObject(m_pPlayer->GetEntity());
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
@@ -206,12 +206,13 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
-	m_camera.Update(dt);
+	const CShVector2 & center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
+	m_camera.Update(dt, center);
+	m_background.Update(dt, center);
 
 	//
 	// Update the world of Box2D
 	m_pWorld->Step(dt, 3, 3);
-
 
 	m_pPlayer->Update(dt);
 

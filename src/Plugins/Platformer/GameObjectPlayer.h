@@ -22,18 +22,17 @@ public:
 		CShArray<ShInput*> m_aRightJoystickInputs;
 	};
 
-	enum EState
+	enum EJumpState
 	{
-		e_state_none
+		e_jump_state_none,
+		e_jump_state_simple,
+		e_jump_state_double
 	};
 
 	//
 	// Construction / Destruction
 	explicit			GameObjectPlayer			(b2Body * body, ShEntity2 * pEntity);
 	virtual				~GameObjectPlayer			(void);
-
-	void				SetState					(EState eState);
-	EState				GetState					(void) const;
 
 	void				Update						(float dt);
 
@@ -53,7 +52,8 @@ protected:
 private:
 public:
 
-	EState				m_eState;				///< @todo comment
+	EJumpState			m_eJumpState;				///< @todo comment
+
 	ShEntity2 *			m_pEntity;				///< @todo comment
 
 	ActionBinding		m_aActions [e_action_max];

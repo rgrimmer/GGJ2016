@@ -7,6 +7,7 @@
 //--------------------------------------------------------------------------------------------------
 /*explicit*/ GameObjectPlayer::GameObjectPlayer(b2Body * body, ShEntity2 * pEntity)
 : GameObject(body)
+, m_eJumpState(e_jump_state_none)
 , m_pEntity(pEntity)
 {
 	//
@@ -167,23 +168,6 @@ bool GameObjectPlayer::CheckAction(EAction eAction) const
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameObjectPlayer::SetState(EState eState)
-{
-	m_eState = eState;
-}
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
-GameObjectPlayer::EState GameObjectPlayer::GetState(void) const
-{
-	return(m_eState);
-}
-
-
-//--------------------------------------------------------------------------------------------------
-/// @todo comment
-//--------------------------------------------------------------------------------------------------
 void GameObjectPlayer::Update(float dt)
 {
 	b2Vec2 vSpeed(0.0f, m_pBody->GetLinearVelocity().y);
@@ -200,9 +184,46 @@ void GameObjectPlayer::Update(float dt)
 
 	m_pBody->SetLinearVelocity(b2Vec2(vSpeed));
 
-	if (CheckAction(e_action_jump))
+	switch (m_eJumpState)
 	{
-		m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 20.0f), m_pBody->GetPosition(), false);
+		case e_jump_state_none:
+		{
+			if (CheckAction(e_action_jump))
+			{
+				m_pBody->SetAwake(true);
+				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 20.0f), m_pBody->GetPosition(), false);
+
+				m_eJumpState = e_jump_state_simple;
+
+				// TODO : change sprite
+			}
+		}
+		break;
+
+		case e_jump_state_simple:
+		{
+			if (CheckAction(e_action_jump))
+			{
+				m_pBody->SetAwake(true);
+				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 20.0f), m_pBody->GetPosition(), false);
+
+				m_eJumpState = e_jump_state_double;
+
+				// TODO : change sprite
+			}
+		}
+		break;
+
+		case e_jump_state_double:
+		{
+			if (m_pBody->GetLinearVelocity().y > -0.01f && m_pBody->GetLinearVelocity().y < 0.01f && shNULL != m_pBody->GetContactList())
+			{
+				m_eJumpState = e_jump_state_none;
+
+				// TODO : change sprite
+			}
+		}
+		break;
 	}
 
 	ShEntity2::SetPositionX(m_pEntity, m_pBody->GetPosition().x * RATIO_B2_SH);
