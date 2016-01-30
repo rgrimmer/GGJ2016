@@ -118,7 +118,7 @@ void CShPluginPlatformer::Release(void)
 
 					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, GameObject::e_type_enemy, 255, false);
 					m_aBody.Add(pBody);
-					//m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
+					m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
 				}
 			}
 			else if (CShIdentifier("platform") == idDataSetIdentifier)
@@ -153,7 +153,7 @@ void CShPluginPlatformer::Release(void)
 
 					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, GameObject::e_type_platform, 255, false);
 					m_aBody.Add(pBody);
-					//m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
+					m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
 				}
 			}
 		}

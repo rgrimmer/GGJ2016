@@ -56,6 +56,13 @@ void GameCamera::Release(void)
 //--------------------------------------------------------------------------------------------------
 void GameCamera::Update(float dt, const CShVector2 & center)
 {
-	ShCamera::SetTarget(m_pCamera, CShVector3(center.m_x, 0.0f, 0.0f));
-	ShCamera::SetPosition(m_pCamera, CShVector3(center.m_x, 0.0f, 150.0f));
+	CShVector2 vPosition = center;
+
+	if (vPosition.m_x < 0.0f)
+	{
+		vPosition.m_x = 0.0f;
+	}
+
+	ShCamera::SetTarget(m_pCamera, CShVector3(vPosition.m_x, 0.0f, 0.0f));
+	ShCamera::SetPosition(m_pCamera, CShVector3(vPosition.m_x, 0.0f, 150.0f));
 }
