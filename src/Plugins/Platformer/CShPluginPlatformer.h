@@ -48,8 +48,12 @@ public:
 	virtual	void				OnPreUpdate					(void);
 	virtual	void				OnPostUpdate				(float dt);
 
-
-	void						SetState					(EState state);
+	//
+	// Pause State
+	void SetPaused(bool paused)
+	{
+		m_bPaused = paused;
+	}
 
 	DECLARE_VARIABLES();
 
@@ -77,7 +81,5 @@ protected:
 	GameCamera m_camera;
 	GameBackground m_background;
 
-	EState							m_eState;
-	float							m_fStateTime;
-	ShEntity2*						m_pEntitySmoke;
+	bool m_bPaused;
 };

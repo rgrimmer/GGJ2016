@@ -6,10 +6,10 @@ Game * Game::instance_ = nullptr;
 Game::Game(void)
 : m_iCurrentState(-1)
 {
-    for (int i = 0; i < MAX_GAME_STATES; ++i)
-    {
-        m_aStates[i] = nullptr;
-    }
+	for (int i = 0; i < MAX_GAME_STATES; ++i)
+	{
+		m_aStates[i] = nullptr;
+	}
 }
 
 /**
@@ -28,23 +28,23 @@ void Game::OnPostInitialize(void)
 	instance();
 	instance_->m_registeredAction.action = e_action_none;
 
-    // Create the Camera
-    ShCamera * pCamera = ShCamera::Create(GID(global), GID(camera), false);
-    SH_ASSERT(shNULL != pCamera);
+	// Create the Camera
+	ShCamera * pCamera = ShCamera::Create(GID(global), GID(camera), false);
+	SH_ASSERT(shNULL != pCamera);
 
-    ShCamera::SetPosition(pCamera, CShVector3(0.0f, 0.0f, 100.0f));
-    ShCamera::SetTarget(pCamera, CShVector3(0.0f, 0.0f, 0.0f));
+	ShCamera::SetPosition(pCamera, CShVector3(0.0f, 0.0f, 100.0f));
+	ShCamera::SetTarget(pCamera, CShVector3(0.0f, 0.0f, 0.0f));
 
-    ShCamera::SetUp(pCamera, CShVector3(0.0f, 1.0f, 0.0f));
+	ShCamera::SetUp(pCamera, CShVector3(0.0f, 1.0f, 0.0f));
 
-    ShCamera::SetProjectionOrtho(pCamera);
-    ShCamera::SetNearPlaneDistance(pCamera, 0.0f);
-    ShCamera::SetFarPlaneDistance(pCamera, 200.0f);
+	ShCamera::SetProjectionOrtho(pCamera);
+	ShCamera::SetNearPlaneDistance(pCamera, 0.0f);
+	ShCamera::SetFarPlaneDistance(pCamera, 200.0f);
 
-    instance_->m_fRescaleRatio = ShDisplay::GetHeight() / (float)ShDisplay::GetWidth();
-    ShCamera::SetViewport(pCamera, DISPLAY_WIDTH, DISPLAY_WIDTH * instance_->m_fRescaleRatio);
+	instance_->m_fRescaleRatio = ShDisplay::GetHeight() / (float)ShDisplay::GetWidth();
+	ShCamera::SetViewport(pCamera, DISPLAY_WIDTH, DISPLAY_WIDTH * instance_->m_fRescaleRatio);
 
-    ShCamera::SetCurrent2D(pCamera);
+	ShCamera::SetCurrent2D(pCamera);
 
 	// Initialize Sound
 	instance_->m_sound.Initialize();
@@ -52,10 +52,10 @@ void Game::OnPostInitialize(void)
 	// Initialize Transition
 	instance_->m_transition.Initialize();
 
-    // Initialize states
+	// Initialize states
 	instance_->m_stateMainMenu.Initialize();
 	instance_->m_stateCredits.Initialize();
-    instance_->m_stateGame.Initialize();
+	instance_->m_stateGame.Initialize();
 
 	instance_->Push(MENU);
 }
@@ -81,19 +81,19 @@ void Game::OnPostUpdate(float dt)
 		{
 			switch(instance_->m_registeredAction.action)
 			{
-				case e_action_pop : 
+				case e_action_pop :
 				{
-					instance_->Pop();					
+					instance_->Pop();
 				}
 				break;
 
-				case e_action_push : 
+				case e_action_push :
 				{
-					instance_->Push(instance_->m_registeredAction.state);					
+					instance_->Push(instance_->m_registeredAction.state);
 				}
 				break;
 
-				default: 
+				default:
 					SH_ASSERT_ALWAYS(); //should never happened
 				break;
 			}
@@ -104,7 +104,7 @@ void Game::OnPostUpdate(float dt)
 
 
 	instance_->m_aStates[instance_->m_iCurrentState]->Update();
-	
+
 }
 
 /**
@@ -204,7 +204,7 @@ void Game::Push(EState state)
 
 	m_aStates[m_iCurrentState] = get(state);
 
-	m_aStates[m_iCurrentState]->Entered();	
+	m_aStates[m_iCurrentState]->Entered();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -225,6 +225,6 @@ void Game::Pop(void)
 	if (m_iCurrentState >= 0)
 	{
 		m_aStates[m_iCurrentState]->Revealed();
-	}	
+	}
 }
 
