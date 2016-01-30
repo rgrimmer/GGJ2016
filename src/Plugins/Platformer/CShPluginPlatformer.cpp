@@ -221,6 +221,33 @@ void CShPluginPlatformer::Release(void)
 					m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
 				}
 			}
+			else if(CShIdentifier("pike") == idDataSetIdentifier)
+			{
+				// Find AABB2
+				ShDummyAABB2 * pShape = shNULL;
+				{
+					int iDataCount = ShDataSet::GetDataCount(pDataSet);
+
+					for (int nData = 0; nData < iDataCount; ++nData)
+					{
+						const CShIdentifier & dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+
+						if (dataIdentifier == CShIdentifier("sensor"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, (ShObject**)&pShape);
+						}
+					}
+				}
+
+				if (shNULL != pShape)
+				{
+					ShDummyCircle * pCircle = (ShDummyCircle *)pShape;
+
+					b2Body * pBody = CreateBodyCircle(ShObject::GetPosition2(pCircle), ShDummyCircle::GetCircle(pCircle).GetRadius(), b2_staticBody, GameObject::e_type_trap, GameObject::e_type_enemy, false, true);
+					m_aBody.Add(pBody);
+					//m_aPlatform.Add(new GameObjectPike(pBody, aEntities[nEntity]));
+				}
+			}
 		}
 	}
 

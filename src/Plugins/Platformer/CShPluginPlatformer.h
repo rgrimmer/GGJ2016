@@ -13,6 +13,7 @@
 #include "GameObjectEnemy.h"
 #include "GameObjectPlatform.h"
 #include "GameObjectSensor.h"
+#include "GameObjectPike.h"
 
 #include "GameContactListener.h"
 
