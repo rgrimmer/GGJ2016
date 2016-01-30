@@ -1,8 +1,9 @@
 #include "CShPluginPlatformer.h"
 
-#define PLAYER_SPEED 1.0f
+#define PLAYER_SPEED 3.0f
 
 #define ANIMATION_IDLE_COUNT 24
+#define ANIMATION_RUN_COUNT 12
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
@@ -117,30 +118,44 @@
 //--------------------------------------------------------------------------------------------------
 void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 {
-	m_iCurrentAnimation = 0;
-
 	char szEntityName[1024];
+
+	m_aAnimationEntity[e_animation_idle].SetCount(ANIMATION_IDLE_COUNT);
 
 	for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
 	{
 		sprintf(szEntityName, "player_anim_idle_%d", i);
 
-		ShEntity2* pEntity = ShEntity2::Create(levelIdentifier,
-			CShIdentifier(GID(NULL)),
-			CShIdentifier("layer_default"),
+		m_aAnimationEntity[e_animation_idle][i] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
 			CShIdentifier("ggj"),
 			CShIdentifier(szEntityName),
 			CShVector3(0.0f,0.0f, 15.0f),
 			CShEulerAngles_ZERO,
 			CShVector3(1.0f,1.0f,1.0f));
 
-		ShEntity2::SetShow(pEntity, false);
-		ShEntity2::SetPivotBottomCenter(pEntity);
-
-		m_aAnimationEntity[e_animation_idle].Add(pEntity);
+		ShEntity2::SetShow(m_aAnimationEntity[e_animation_idle][i], false);
+		ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_idle][i]);
 	}
 
-	m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
+	m_aAnimationEntity[e_animation_run].SetCount(ANIMATION_RUN_COUNT);
+
+	for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
+	{
+		sprintf(szEntityName, "player_anim_run_%d", i);
+
+		m_aAnimationEntity[e_animation_run][i] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
+			CShIdentifier("ggj"),
+			CShIdentifier(szEntityName),
+			CShVector3(0.0f,0.0f, 15.0f),
+			CShEulerAngles_ZERO,
+			CShVector3(1.0f,1.0f,1.0f));
+
+		ShEntity2::SetShow(m_aAnimationEntity[e_animation_run][i], false);
+		ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_run][i]);
+	}
+
+	m_eCurrentAnimation = e_animation_idle;
+	m_iCurrentAnimation = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -152,6 +167,12 @@ void GameObjectPlayer::Release(void)
 	{
 		ShObject::DestroyObject(m_aAnimationEntity[e_animation_idle][i]);
 		m_aAnimationEntity[e_animation_idle][i] = shNULL;
+	}
+
+	for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
+	{
+		ShObject::DestroyObject(m_aAnimationEntity[e_animation_run][i]);
+		m_aAnimationEntity[e_animation_run][i] = shNULL;
 	}
 }
 
@@ -301,41 +322,96 @@ void GameObjectPlayer::Update(float dt)
 	}
 
 
-
-	//update animation
+	//
+	// Update animation
 	m_fAnimationTime += dt;
 
-	ShEntity2::SetShow(m_apCurrentAnimation[m_iCurrentAnimation], false);
+	if (shNULL != m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation])
+	{
+		ShEntity2::SetShow(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], false);
+	}
 
 	while (m_fAnimationTime > 0.05f)
 	{
 		m_iCurrentAnimation++;
-		m_iCurrentAnimation %= m_apCurrentAnimation.GetCount();
+		m_iCurrentAnimation %= m_aAnimationEntity[m_eCurrentAnimation].GetCount();
 		m_fAnimationTime -= 0.05f;
 	}
 
-	ShEntity2::SetShow(m_apCurrentAnimation[m_iCurrentAnimation], true);
-
-	ShEntity2::SetPositionX(m_apCurrentAnimation[m_iCurrentAnimation], m_pBody->GetPosition().x * RATIO_B2_SH);
-	ShEntity2::SetPositionY(m_apCurrentAnimation[m_iCurrentAnimation], m_pBody->GetPosition().y * RATIO_B2_SH);
-}
-
-void GameObjectPlayer::SetState(EState state)
-{
-	ShEntity2::SetShow(m_apCurrentAnimation[m_iCurrentAnimation], false);
-	m_eState = state;
-
-	switch (m_eState)
+	if (shNULL != m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation])
 	{
-		case e_state_idle :
-		{
-			m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
-		}
-		break;
+		ShEntity2::SetShow(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], true);
+
+		ShEntity2::SetPositionX(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], m_pBody->GetPosition().x * RATIO_B2_SH);
+		ShEntity2::SetPositionY(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], m_pBody->GetPosition().y * RATIO_B2_SH);
 	}
 }
 
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameObjectPlayer::SetState(EState newState)
+{
+	ShEntity2::SetShow(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], false);
+
+	EState oldState = m_eState;
+
+	switch (newState)
+	{
+		case e_state_idle:
+		{
+			m_eCurrentAnimation = e_animation_idle;
+			m_iCurrentAnimation = 0;
+
+			if (oldState == e_state_move_right)
+			{
+				for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
+				{
+					ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
+				}
+			}
+			else if (oldState == e_state_move_left)
+			{
+				for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
+				{
+					ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, 0.0f, 180.0f));
+				}
+			}
+		}
+		break;
+
+		case e_state_move_right:
+		{
+			m_eCurrentAnimation = e_animation_run;
+			m_iCurrentAnimation = 0;
+
+			for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
+			{
+				ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
+			}
+		}
+		break;
+
+		case e_state_move_left:
+		{
+			m_eCurrentAnimation = e_animation_run;
+			m_iCurrentAnimation = 0;
+
+			for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
+			{
+				ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, 0.0f, 180.0f));
+			}
+		}
+		break;
+	}
+
+	m_eState = newState;
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
 ShEntity2 * GameObjectPlayer::GetEntity(void) const
 {
-	return m_apCurrentAnimation[m_iCurrentAnimation];
+	return(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation]);
 }

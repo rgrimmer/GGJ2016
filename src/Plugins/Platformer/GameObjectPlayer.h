@@ -18,6 +18,7 @@ public:
 	enum EAnimation
 	{
 		e_animation_idle,
+		e_animation_run,
 		e_animation_max
 	};
 
@@ -71,16 +72,17 @@ protected:
 private:
 public:
 
-	EState				m_eState;					///< @todo comment
-	EJumpState			m_eJumpState;				///< @todo comment
+	EState					m_eState;					///< @todo comment
+	EJumpState				m_eJumpState;				///< @todo comment
 
-	ShEntity2 *			m_pEntity;				///< @todo comment
+	ShEntity2 *				m_pEntity;				///< @todo comment
 
-	CShArray<ShEntity2*>m_aAnimationEntity[e_animation_max];
-	CShArray<ShEntity2*>m_apCurrentAnimation;
-	int					m_iCurrentAnimation;
-	float				m_fAnimationTime;
+	CShArray<ShEntity2*>	m_aAnimationEntity[e_animation_max];
 
-	ActionBinding		m_aActions [e_action_max];
+	EAnimation				m_eCurrentAnimation;
+	int						m_iCurrentAnimation;
+	float					m_fAnimationTime;
+
+	ActionBinding			m_aActions [e_action_max];
 
 };
