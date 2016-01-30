@@ -101,7 +101,7 @@
 	}
 
 	// animations
-	
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -141,7 +141,8 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 				CShVector3(1.0f,1.0f,1.0f));
 
 			ShEntity2::SetShow(pEntity, false);
-			//ShEntity2::SetPivotBottomCenter(pEntity);
+			ShEntity2::SetPivotBottomCenter(pEntity);
+
 			m_aAnimationEntity[e_animation_idle].Add(pEntity);
 		}
 	}
@@ -231,21 +232,21 @@ void GameObjectPlayer::Update(float dt)
 
 	switch (m_eState)
 	{
-		case e_state_move_left: 
+		case e_state_move_left:
 		{
-			vSpeed.x = -PLAYER_SPEED;			
+			vSpeed.x = -PLAYER_SPEED;
 		}
 		break;
 
 		case e_state_move_right:
 		{
-			vSpeed.x = PLAYER_SPEED;	
+			vSpeed.x = PLAYER_SPEED;
 		}
 		break;
 
-		case e_state_jump: 
+		case e_state_jump:
 		{
-	
+
 		}
 		break;
 	}
@@ -292,7 +293,7 @@ void GameObjectPlayer::Update(float dt)
 			}
 		}
 		break;
-	}			
+	}
 
 
 
@@ -321,7 +322,7 @@ void GameObjectPlayer::SetState(EState state)
 
 	switch (m_eState)
 	{
-		case e_state_idle : 
+		case e_state_idle :
 		{
 			m_apCurrentAnimation = m_aAnimationEntity[e_animation_idle];
 		}
