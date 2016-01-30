@@ -206,7 +206,13 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
-	const CShVector2 & center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
+	CShVector2 center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
+	
+	if (center.m_x < 0.0f)
+	{
+		center.m_x = 0.0f;
+	}
+
 	m_camera.Update(dt, center);
 	m_background.Update(dt, center);
 
