@@ -12,6 +12,9 @@ CShPluginPlatformer::CShPluginPlatformer(void)
 : CShPlugin(CShIdentifier("Platformer"))
 , m_pWorld(shNULL)
 , m_aBody()
+, m_eState(e_state_intro)
+, m_pEntitySmoke(shNULL)
+, m_fStateTime(0.0f)
 {
 
 }
@@ -134,9 +137,11 @@ void CShPluginPlatformer::Release(void)
 						else if(dataIdentifier == CShIdentifier("Limit_left"))
 						{
 							ShDataSet::GetDataValue(pDataSet, nData, &pCollisionSegmentLeft);
+							
+							ShObject * pCollisionObject = ShCollisionSegment::GetPoint1((ShCollisionSegment*)pCollisionSegmentLeft);
 
-							b2Body* pBody = CreateBodySegment(ShCollisionSegment::GetP1((ShCollisionSegment*)pCollisionSegmentLeft), 
-																ShCollisionSegment::GetP2((ShCollisionSegment*)pCollisionSegmentLeft),
+							b2Body* pBody = CreateBodySegment(CShVector2(ShObject::GetWorldTM(pCollisionObject).getTranslation().m_x, ShObject::GetWorldTM(pCollisionObject).getTranslation().m_y),
+																CShVector2(ShObject::GetWorldTM(pCollisionObject).getTranslation().m_x, ShObject::GetWorldTM(pCollisionObject).getTranslation().m_y),
 																b2_staticBody,
 																GameObject::e_type_sensor,
 																GameObject::e_type_enemy,
@@ -149,8 +154,10 @@ void CShPluginPlatformer::Release(void)
 						{
 							ShDataSet::GetDataValue(pDataSet, nData, &pCollisionSegmentRight);
 
-							b2Body* pBody = CreateBodySegment(ShCollisionSegment::GetP1((ShCollisionSegment*)pCollisionSegmentRight), 
-																ShCollisionSegment::GetP2((ShCollisionSegment*)pCollisionSegmentRight),
+							ShObject * pCollisionObject = ShCollisionSegment::GetPoint1((ShCollisionSegment*)pCollisionSegmentRight);
+
+							b2Body* pBody = CreateBodySegment(CShVector2(ShObject::GetWorldTM(pCollisionObject).getTranslation().m_x, ShObject::GetWorldTM(pCollisionObject).getTranslation().m_y),
+																CShVector2(ShObject::GetWorldTM(pCollisionObject).getTranslation().m_x, ShObject::GetWorldTM(pCollisionObject).getTranslation().m_y),
 																b2_staticBody,
 																GameObject::e_type_sensor,
 																GameObject::e_type_enemy,
@@ -203,7 +210,7 @@ void CShPluginPlatformer::Release(void)
 
 					const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
 					const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
-
+					
 					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, GameObject::e_type_platform, 255, false);
 					m_aBody.Add(pBody);
 					m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
@@ -211,6 +218,10 @@ void CShPluginPlatformer::Release(void)
 			}
 		}
 	}
+
+	m_pEntitySmoke = ShEntity2::Find(levelIdentifier, CShIdentifier("sprite_ggj_smoke_001"));
+	ShEntity2::SetShow(m_pEntitySmoke, false);
+	SetState(e_state_intro);
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
@@ -252,6 +263,8 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
+	m_fStateTime += dt;
+
 	CShVector2 center = ShEntity2::GetPosition2(m_pPlayer->GetEntity());
 
 	if (center.m_x < 0.0f)
@@ -262,25 +275,65 @@ void CShPluginPlatformer::Release(void)
 	m_camera.Update(dt, center);
 	m_background.Update(dt, center);
 
-	//
-	// Update the world of Box2D
-	m_pWorld->Step(dt, 3, 3);
-
-	m_pPlayer->Update(dt);
-
-	int iEnemyCount = m_aEnemy.GetCount();
-	for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
+	switch (m_eState)
 	{
-		GameObjectEnemy * pEnemy = m_aEnemy[nEnemy];
-		pEnemy->Update(dt);
+		case e_state_intro : 
+		{
+			if (m_fStateTime > 1.0f)
+				SetState(e_state_smoke);
+		}
+		break;
+
+		case e_state_smoke :
+		{
+			if (m_fStateTime < 3.0f)
+			{
+				ShObject::SetAlpha(m_pEntitySmoke, 1.0f - (m_fStateTime / 3.0f));
+			}
+			else
+			{
+				SetState(e_state_play);
+			}
+		}
+		break;
+
+		case e_state_play :
+		{
+			//
+			// Update the world of Box2D
+			m_pWorld->Step(dt, 3, 3);
+
+			m_pPlayer->Update(dt);
+
+			int iEnemyCount = m_aEnemy.GetCount();
+			for (int nEnemy = 0; nEnemy < iEnemyCount; ++nEnemy)
+			{
+				GameObjectEnemy * pEnemy = m_aEnemy[nEnemy];
+				pEnemy->Update(dt);
+			}
+
+			int iPlatformCount = m_aPlatform.GetCount();
+			for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
+			{
+				GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
+				pPlatform->Update(dt);
+			}		
+		}
+		break;
+	}
+}
+
+void CShPluginPlatformer::SetState(EState state)
+{
+	m_eState = state;
+
+	if (state == e_state_smoke)
+	{
+		ShEntity2::SetShow(m_pEntitySmoke, true);
+		ShObject::SetAlpha(m_pEntitySmoke, 0.0f);
 	}
 
-	int iPlatformCount = m_aPlatform.GetCount();
-	for (int nPlatform = 0; nPlatform < iPlatformCount; ++nPlatform)
-	{
-		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
-		pPlatform->Update(dt);
-	}
+	m_fStateTime = 0.0f;
 }
 
 b2Body* CShPluginPlatformer::CreateBodySegment(const CShVector2 & point1, const CShVector2 & point2, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)

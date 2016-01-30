@@ -6,6 +6,7 @@
 /*explicit*/ GameObjectEnemy::GameObjectEnemy(void)
 : GameObject(shNULL)
 , m_pEntity(shNULL)
+, m_pPrefab(shNULL)
 {
 
 }
@@ -18,7 +19,8 @@
 , m_pEntity(pEntity)
 , m_iDirection(1)
 {
-
+	ShObject * pObject = ShPrefab::GetParent((ShObject*)pEntity);
+	m_pPrefab = (ShPrefab *)(pObject);
 }
 
 //--------------------------------------------------------------------------------------------------

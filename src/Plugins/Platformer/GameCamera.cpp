@@ -32,7 +32,7 @@ void GameCamera::Initialize(const CShIdentifier & levelIdentifier)
 	ShCamera::SetFarPlaneDistance(m_pCamera, 200.0f);
 
 #if SH_EDITOR
-	ShCamera::SetViewport(m_pCamera, DISPLAY_WIDTH*6.0f, DISPLAY_HEIGHT*6.0f);
+	ShCamera::SetViewport(m_pCamera, DISPLAY_WIDTH*6.4f, DISPLAY_HEIGHT*6.4f);
 #else
 	ShCamera::SetViewport(m_pCamera, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 #endif // SH_EDITOR
