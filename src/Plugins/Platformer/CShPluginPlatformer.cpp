@@ -42,6 +42,11 @@ void CShPluginPlatformer::Release(void)
 	SH_ASSERT(shNULL != m_pWorld);
 
 	//
+	//Create contact listener
+	m_pContactListener = new GameContactListener();
+	m_pWorld->SetContactListener(m_pContactListener);
+
+	//
 	// Get all 2D entities
 	CShArray<ShEntity2 *> aEntities;
 	ShEntity2::GetEntity2Array(levelIdentifier, aEntities);

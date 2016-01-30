@@ -13,6 +13,8 @@
 #include "GameObjectEnemy.h"
 #include "GameObjectPlatform.h"
 
+#include "GameContactListener.h"
+
 #define RATIO_B2_SH 200.0f
 #define convert_Sh_b2(a) (b2Vec2(a.m_x/RATIO_B2_SH, a.m_y/RATIO_B2_SH))
 
@@ -51,6 +53,7 @@ protected:
 
 	CShArray<b2Body*> m_aBody;
 
+	GameContactListener *			m_pContactListener;
 	GameObjectPlayer *				m_pPlayer;
 	CShArray<GameObjectEnemy *>		m_aEnemy;
 	CShArray<GameObjectPlatform *>	m_aPlatform;
