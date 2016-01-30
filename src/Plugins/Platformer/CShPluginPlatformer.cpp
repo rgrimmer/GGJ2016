@@ -239,13 +239,21 @@ void CShPluginPlatformer::Release(void)
 					}
 				}
 
+				// Create body from AABB2
 				if (shNULL != pShape)
 				{
-					ShDummyCircle * pCircle = (ShDummyCircle *)pShape;
+					const CShVector2 & vPosition = ShDummyAABB2::GetPosition2(pShape);
+					const CShAABB2 & aabb = ShDummyAABB2::GetAABB(pShape);
+					const CShVector2 & minPoint = aabb.GetMin();
+					const CShVector2 & maxPoint = aabb.GetMax();
+					const CShVector3 & scale = ShDummyAABB2::GetScale(pShape);
 
-					b2Body * pBody = CreateBodyCircle(ShObject::GetPosition2(pCircle), ShDummyCircle::GetCircle(pCircle).GetRadius(), b2_staticBody, GameObject::e_type_trap, GameObject::e_type_enemy, false, true);
+					const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
+					const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
+
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, GameObject::e_type_pike, GameObject::e_type_player, true);
 					m_aBody.Add(pBody);
-					//m_aPlatform.Add(new GameObjectPike(pBody, aEntities[nEntity]));
+					m_aPike.Add(new GameObjectPike(pBody, aEntities[nEntity]));
 				}
 			}
 		}

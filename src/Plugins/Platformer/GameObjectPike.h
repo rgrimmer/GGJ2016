@@ -12,10 +12,13 @@ public:
 
 	//
 	// Construction / Destruction
-	explicit			GameObjectPike				(b2Body * body);
+	explicit			GameObjectPike				(b2Body * body, ShEntity2 * pEntity);
 	virtual				~GameObjectPike				(void);
 
 	virtual EType		GetType						(void) const;
+
+	void				Start						(void);
+	void				End							(void);
 
 protected:
 
@@ -26,6 +29,7 @@ public:
 protected:
 
 private:
+	ShEntity2*			m_pEntity;
 public:
 	
 };	
