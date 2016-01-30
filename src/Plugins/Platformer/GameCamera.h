@@ -11,6 +11,10 @@ public:
 
 	void				Initialize				(void);
 	void				Release					(void);
+
+	void				FollowObject			(ShObject * pObjectToFollow);
+
+	void				Update					(float	dt);
 protected:
 
 private:
@@ -21,4 +25,5 @@ protected:
 
 private:
 	ShCamera * m_pCamera;
+	ShObject * m_pObjectToFollow;
 };

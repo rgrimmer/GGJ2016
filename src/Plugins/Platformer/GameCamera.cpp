@@ -4,6 +4,7 @@
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
 /*explicit*/ GameCamera::GameCamera(void)
+: m_pObjectToFollow(shNULL)
 {
 }
 
@@ -21,22 +22,21 @@
 void GameCamera::Initialize(void)
 {
     // Create the Camera
-    ShCamera * pCamera = ShCamera::Create(GID(global), GID(camera), false);
-    SH_ASSERT(shNULL != pCamera);
+    m_pCamera = ShCamera::Create(GID(global), GID(camera), false);
+    SH_ASSERT(shNULL != m_pCamera);
 
-    ShCamera::SetPosition(pCamera, CShVector3(0.0f, 0.0f, 100.0f));
-    ShCamera::SetTarget(pCamera, CShVector3(0.0f, 0.0f, 0.0f));
+    ShCamera::SetPosition(m_pCamera, CShVector3(0.0f, 0.0f, 100.0f));
+    ShCamera::SetTarget(m_pCamera, CShVector3(0.0f, 0.0f, 0.0f));
 
-    ShCamera::SetUp(pCamera, CShVector3(0.0f, 1.0f, 0.0f));
+    ShCamera::SetUp(m_pCamera, CShVector3(0.0f, 1.0f, 0.0f));
 
-    ShCamera::SetProjectionOrtho(pCamera);
-    ShCamera::SetNearPlaneDistance(pCamera, 0.0f);
-    ShCamera::SetFarPlaneDistance(pCamera, 200.0f);
+    ShCamera::SetProjectionOrtho(m_pCamera);
+    ShCamera::SetNearPlaneDistance(m_pCamera, 0.0f);
+    ShCamera::SetFarPlaneDistance(m_pCamera, 200.0f);
 
-    float fRescaleRatio = ShDisplay::GetHeight() / (float)ShDisplay::GetWidth();
-    ShCamera::SetViewport(pCamera, DISPLAY_WIDTH, DISPLAY_WIDTH * fRescaleRatio);
+    ShCamera::SetViewport(m_pCamera, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
-    ShCamera::SetCurrent2D(pCamera);
+    ShCamera::SetCurrent2D(m_pCamera);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -45,4 +45,24 @@ void GameCamera::Initialize(void)
 void GameCamera::Release(void)
 {
 
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameCamera::FollowObject(ShObject * pObjectToFollow)
+{
+	m_pObjectToFollow = pObjectToFollow;
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameCamera::Update(float dt)
+{
+	if (shNULL != m_pObjectToFollow)
+	{
+		ShCamera::SetTarget(m_pCamera, CShVector3(ShObject::GetPosition2(m_pObjectToFollow).m_x, 0.0f, 0.0f));
+		ShCamera::SetPosition(m_pCamera, CShVector3(ShObject::GetPosition2(m_pObjectToFollow).m_x, 0.0f, 200.0f));
+	}
 }

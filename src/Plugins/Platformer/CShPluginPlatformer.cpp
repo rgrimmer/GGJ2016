@@ -21,7 +21,7 @@ CShPluginPlatformer::CShPluginPlatformer(void)
 
 void CShPluginPlatformer::Initialize(void)
 {
-	m_camera.Initialize();
+
 }
 
 void CShPluginPlatformer::Release(void)
@@ -31,6 +31,8 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStart(const CShIdentifier & levelIdentifier)
 {
+	m_camera.Initialize();
+
 	//
 	// Create a world with gravity
 	b2Vec2 gravity;
@@ -139,7 +141,8 @@ void CShPluginPlatformer::Release(void)
 	}
 
 	SH_ASSERT(shNULL != pBody)
-	
+
+	m_camera.FollowObject(m_pPlayer->GetEntity());
 }
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
@@ -188,6 +191,8 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPostUpdate(float dt)
 {
+	m_camera.Update(dt);
+
 	//
 	// Update the world of Box2D 
 	m_pWorld->Step(dt, 3, 3);
