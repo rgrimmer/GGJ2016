@@ -4,6 +4,13 @@ class GameStateGame : public GameState
 {
 public:
 
+	enum EState
+	{
+		e_state_intro,
+		e_state_smoke,
+		e_state_play
+	};
+
 	//
 	// Construction / Destruction
 	explicit		GameStateGame		(void);
@@ -18,7 +25,7 @@ public:
 	virtual void	Revealed				(void);
 	virtual void	Exiting					(void);
 	virtual void	Entered					(void);
-		
+
 	//
 	// Update
 	void			Update					(float dt);
@@ -29,15 +36,25 @@ public:
 	virtual void	OnTouchUp				(int iTouch, float positionX, float positionY);
 	virtual void	OnTouchMove				(int iTouch, float positionX, float positionY);
 
+
+	void			SetState				(EState state);
+
 protected:
 
 private:
+
 	void			Activate				(void);
 	void			DeActivate				(void);
+
 public:
 
 protected:
 
 private:
+
+	EState							m_eState;
+	float							m_fStateTime;
+
+	ShEntity2 *						m_pEntitySmoke;
 
 };

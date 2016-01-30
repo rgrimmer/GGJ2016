@@ -1,9 +1,10 @@
 #include "Game.h"
+
 #include "../Plugins/Platformer/CShPluginPlatformer.h"
 
 //
 // Declare plugins
-static CShPluginPlatformer plugin_platformer;
+CShPluginPlatformer plugin_platformer;
 
 void RegisterGameCallbacks(void)
 {
