@@ -50,11 +50,20 @@ public:
 
 protected:
 
+	struct SmokeParticle
+	{
+		ShEntity2 * pEntity;
+		float startTime;
+		float duration;
+	};
+
 private:
 
 	EState							m_eState;
 	float							m_fStateTime;
 
-	ShEntity2 *						m_pEntitySmoke;
+	CShArray<SmokeParticle>			m_aEntitySmoke;
+
+	ShEntity2 *						m_pEntityPlayerDead;
 
 };

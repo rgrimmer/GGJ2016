@@ -159,19 +159,17 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 
 	m_aAnimationEntity[e_animation_jump].SetCount(ANIMATION_JUMP_COUNT);
 
-	for (int i = 0; i < ANIMATION_JUMP_COUNT; ++i)
+	//for (int i = 0; i < ANIMATION_JUMP_COUNT; ++i)
 	{
-		sprintf(szEntityName, "player_anim_run_%02d", i);
-
-		m_aAnimationEntity[e_animation_jump][i] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
+		m_aAnimationEntity[e_animation_jump][0] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
 			CShIdentifier("ggj"),
-			CShIdentifier(szEntityName),
+			CShIdentifier("player_anim_jump"),
 			CShVector3(0.0f,0.0f, 15.0f),
 			CShEulerAngles_ZERO,
 			CShVector3(1.0f,1.0f,1.0f));
 
-		ShEntity2::SetShow(m_aAnimationEntity[e_animation_jump][i], false);
-		//ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_jump][i]);
+		ShEntity2::SetShow(m_aAnimationEntity[e_animation_jump][0], false);
+		//ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_jump][0]);
 	}
 
 	m_eCurrentAnimation = e_animation_idle;
