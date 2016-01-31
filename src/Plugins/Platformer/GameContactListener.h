@@ -1,11 +1,12 @@
 #pragma once
 
+class CShPluginPlatformer;
 class GameContactListener : public b2ContactListener
 {
 
 public:
 
-	void			Initialize			(CShIdentifier levelIdentifier);
+	void			Initialize			(CShPluginPlatformer * pGame);
 	void			Release				(void);
 
 	void			Update				(float dt);
@@ -20,5 +21,6 @@ public:
 	void			CollisionEnd		(b2Contact * contact, GameObject * object);
 private:
 
+	CShPluginPlatformer *				m_pGame;
 	CShIdentifier						m_levelIdentifier;
 };

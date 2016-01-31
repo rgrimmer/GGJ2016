@@ -13,7 +13,9 @@ public:
 		e_type_platform = 3,		///< @todo comment
 		e_type_sensor = 4,
 		e_type_pike = 5,
-		e_type_rock = 6
+		e_type_rock = 6,
+		e_type_spear = 7,
+		e_type_spear_pike = 8,
 	};
 
 	//

@@ -53,10 +53,13 @@ void Transition::Release(void)
 //--------------------------------------------------------------------------------------------------
 void Transition::Update(float dt)
 {
-	m_fStateTime += dt;
+	if (dt > 0.5f)
+		return; // :-)
 
 	if (e_state_transition_in == m_eState)
 	{
+		m_fStateTime += dt;
+
 		if (m_fStateTime < 1.0f)
 		{
 			ShObject::SetAlpha(m_pEntityBackground, m_fStateTime);
@@ -69,6 +72,8 @@ void Transition::Update(float dt)
 	}
 	else if(e_state_transition_out == m_eState)
 	{
+		m_fStateTime += dt;
+
 		if (m_fStateTime < 1.0f)
 		{
 			ShObject::SetAlpha(m_pEntityBackground, 1.0f - m_fStateTime);
@@ -87,6 +92,9 @@ void Transition::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 void Transition::SetState(EState eState)
 {
+	ShCamera* pCamera = ShCamera::GetCamera2D();
+	ShEntity2::SetPositionX(m_pEntityBackground, ShCamera::GetPosition(pCamera).m_x);
+
 	if (e_state_transition_in == eState)
 	{
 		ShEntity2::SetShow(m_pEntityBackground, true);

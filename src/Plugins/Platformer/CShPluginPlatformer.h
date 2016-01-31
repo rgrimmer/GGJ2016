@@ -15,6 +15,7 @@
 #include "GameObjectSensor.h"
 #include "GameObjectPike.h"
 #include "GameObjectRock.h"
+#include "GameObjectSpear.h"
 
 #include "GameContactListener.h"
 
@@ -47,6 +48,8 @@ public:
 	void						Initialize					(void);
 	void						Release						(void);
 
+	bool						RestartGame					(void);
+
 	virtual	void				OnPlayStart					(const CShIdentifier & levelIdentifier);
 	virtual	void				OnPlayStop					(const CShIdentifier & levelIdentifier);
 	virtual	void				OnPlayPause					(const CShIdentifier & levelIdentifier);
@@ -64,10 +67,13 @@ public:
 
 	DECLARE_VARIABLES();
 
+	bool m_bRestartGame;
+
 private:
 
-	b2Body *					CreateBodyCircle			(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
-	b2Body *					CreateBodyBox				(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isSensor);
+	b2Body *					CreateSpear					(ShDummyAABB2 * pShapePike, ShDummyAABB2 * pShapeSpear);
+	b2Body *					CreateBodyCircle			(const CShVector2 & position, float radius, b2BodyType type, float fFriction, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
+	b2Body *					CreateBodyBox				(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, float fFriction, unsigned int categoryBits, unsigned int maskBits, bool isSensor);
 	b2Body *					CreateBodySegment			(const CShVector2 & p1, const CShVector2 & p2, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
 
 	ShScriptTree *				LoadConfig					(const CShIdentifier & levelIdentifier);
@@ -86,6 +92,10 @@ protected:
 	CShArray<GameObjectPlatform *>	m_aPlatform;
 	CShArray<GameObjectSensor *>	m_aSensor;
 	CShArray<GameObjectRock *>		m_aRock;
+
+	CShArray<GameObjectSpear *>		m_aSpear;
+	float							m_fSpearTime;
+	int								m_iCurrentSpear;
 
 	GameCamera m_camera;
 	GameBackground m_background;

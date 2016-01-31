@@ -3,9 +3,10 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*explicit*/ GameObjectPike::GameObjectPike(b2Body * body, ShEntity2 * pEntity)
+/*explicit*/ GameObjectPike::GameObjectPike(CShPluginPlatformer * pPlatformer, b2Body * body, ShEntity2 * pEntity)
 : GameObject(body)
 , m_pEntity(pEntity)
+, m_pPlatformer(pPlatformer)
 {
 	ShEntity2::SetShow(pEntity, false);
 }
@@ -32,6 +33,7 @@
 void GameObjectPike::Start(void)
 {
 	ShEntity2::SetShow(m_pEntity, true);
+	m_pPlatformer->m_bRestartGame = true;
 }
 
 //--------------------------------------------------------------------------------------------------

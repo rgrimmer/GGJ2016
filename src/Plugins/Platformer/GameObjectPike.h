@@ -1,5 +1,6 @@
 #pragma once
 
+class CShPluginPlatformer;
 class GameObjectPike : public GameObject
 {
 
@@ -12,7 +13,7 @@ public:
 
 	//
 	// Construction / Destruction
-	explicit			GameObjectPike				(b2Body * body, ShEntity2 * pEntity);
+	explicit			GameObjectPike				(CShPluginPlatformer * pPlatformer, b2Body * body, ShEntity2 * pEntity);
 	virtual				~GameObjectPike				(void);
 
 	virtual EType		GetType						(void) const;
@@ -29,7 +30,8 @@ public:
 protected:
 
 private:
-	ShEntity2*			m_pEntity;
+	CShPluginPlatformer *	m_pPlatformer;
+	ShEntity2*				m_pEntity;
 public:
 	
 };	

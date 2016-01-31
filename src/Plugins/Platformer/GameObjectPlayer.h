@@ -2,6 +2,7 @@
 
 //
 /// @todo comment
+class CShPluginPlatformer;
 class GameObjectPlayer : public GameObject
 {
 
@@ -45,7 +46,7 @@ public:
 
 	//
 	// Construction / Destruction
-	explicit			GameObjectPlayer			(b2Body * body, ShEntity2 * pEntity);
+	explicit			GameObjectPlayer			(CShPluginPlatformer* pPlatformer, b2Body * body, ShEntity2 * pEntity);
 	virtual				~GameObjectPlayer			(void);
 
 	void				Initialize					(const CShIdentifier & levelIdentifier);
@@ -75,6 +76,7 @@ public:
 	EState					m_eState;					///< @todo comment
 	EDirection				m_eDirection;
 
+	CShPluginPlatformer *	m_pPlatformer;
 	ShEntity2 *				m_pEntity;				///< @todo comment
 
 	CShArray<ShEntity2*>	m_aAnimationEntity[e_animation_max];
