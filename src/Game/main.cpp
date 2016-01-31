@@ -19,6 +19,7 @@ void RegisterGameCallbacks(void)
 	ShInput::AddOnTouchUp(Game::OnTouchUp);
 	ShInput::AddOnTouchMove(Game::OnTouchMove);
 
+	//ShDisplay::SetFullScreen();
 }
 
 void RegisterPlugins(void)

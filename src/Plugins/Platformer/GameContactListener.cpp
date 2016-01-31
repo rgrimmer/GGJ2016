@@ -101,13 +101,30 @@ void GameContactListener::CollisionStart(b2Contact * contact, GameObject * objec
 
 		case GameObject::e_type_spear:
 		{
-			if (contact->GetFixtureA()->GetUserData() == (void*)1)
+			if (static_cast<GameObject *>(contact->GetFixtureA()->GetBody()->GetUserData())->GetType() == GameObject::e_type_platform)
 			{
-				m_pGame->m_bRestartGame = true;
+				if (contact->GetFixtureB()->GetUserData() == (void*)1)
+				{
+					static_cast<GameObjectSpear *>(object)->SetState(GameObjectSpear::e_state_plant, 0.0f);
+				}
 			}
-			else if(contact->GetFixtureB()->GetUserData() == (void*)1)
+			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_platform)
 			{
-				m_pGame->m_bRestartGame = true;
+				if (contact->GetFixtureA()->GetUserData() == (void*)1)
+				{
+					static_cast<GameObjectSpear *>(object)->SetState(GameObjectSpear::e_state_plant, 0.0f);
+				}
+			}
+			else
+			{
+				if (contact->GetFixtureA()->GetUserData() == (void*)1)
+				{
+					m_pGame->m_bRestartGame = true;
+				}
+				else if(contact->GetFixtureB()->GetUserData() == (void*)1)
+				{
+					m_pGame->m_bRestartGame = true;
+				}
 			}
 		}
 		break;
