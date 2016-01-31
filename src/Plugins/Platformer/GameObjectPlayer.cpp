@@ -328,22 +328,18 @@ void GameObjectPlayer::Update(float dt)
 		{
 			vSpeed.y = m_pBody->GetLinearVelocity().y;
 
+			if (CheckAction(e_action_move_left))
+			{
+				SetDirection(e_direction_left);
+			}
+			else if (CheckAction(e_action_move_right))
+			{
+				SetDirection(e_direction_right);
+			}
+
 			if (vSpeed.y > -0.01f && vSpeed.y < 0.01f && shNULL != m_pBody->GetContactList())
 			{
-				if (CheckAction(e_action_move_left))
-				{
-					SetDirection(e_direction_left);
-					SetState(e_state_running);
-				}
-				else if (CheckAction(e_action_move_right))
-				{
-					SetDirection(e_direction_right);
-					SetState(e_state_running);
-				}
-				else
-				{
-					SetState(e_state_idle);
-				}
+				SetState(e_state_idle);
 			}
 			else
 			{
