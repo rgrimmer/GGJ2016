@@ -315,22 +315,32 @@ bool CShPluginPlatformer::RestartGame(void)
 
 				if (shNULL != pShapePike && shNULL != pShapeHandle)
 				{
-					//for (int i = 0; i < 1.; ++i)
-					//{
-						b2Body * pBody = CreateSpear(pShapePike, pShapeHandle);
-						m_aSpear.Add(new GameObjectSpear(pBody, aEntities[nEntity]));
-					//}
+					b2Body * pBody = CreateSpear(b2_kinematicBody, pShapePike, pShapeHandle);
+					m_pKinematicSpear = new GameObjectSpear(levelIdentifier, b2_kinematicBody, pBody, aEntities[nEntity]);
 
+					for (int i = 0; i < 10; ++i)
+					{
+						b2Body * pBodyDynamic = CreateSpear(b2_dynamicBody, pShapePike, pShapeHandle);
+						m_aSpear.Add(new GameObjectSpear(levelIdentifier, b2_dynamicBody, pBodyDynamic, shNULL));
+					}
 				}
 			}
 		}
 	}
 
+	
+	m_fSpearTime = -4.0f;
+	m_iCurrentSpear = 0;
+
 	m_pPlayer->Initialize(levelIdentifier);
 
-	m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_on, 1920.0f);
+	for (int nSpear = 0; nSpear < m_aSpear.GetCount(); ++nSpear)
+	{
+		m_aSpear[nSpear]->SetState(GameObjectSpear::e_state_off, 1920.0f);
+	}
 
-	m_iCurrentSpear = 0;
+	m_pKinematicSpear->SetState(GameObjectSpear::e_state_on, 1920.0f);
+
 	m_bPaused = false;
 
 }
@@ -388,6 +398,8 @@ bool CShPluginPlatformer::RestartGame(void)
 	}
 
 	m_aSpear.Empty();
+
+	SH_SAFE_DELETE(m_pKinematicSpear);
 
 	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);
@@ -458,19 +470,31 @@ bool CShPluginPlatformer::RestartGame(void)
 		pRock->Update(dt);
 	}
 
-	m_fSpearTime += dt;
 
-	if (m_aSpear[m_iCurrentSpear]->GetBody()->GetPosition().x * RATIO_B2_SH < center.m_x - 1920.0f)
+	if (m_pKinematicSpear->GetBody()->GetPosition().x * RATIO_B2_SH < center.m_x - 1920.0f)
 	{
-		m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_off, center.m_x);
-		//m_iCurrentSpear++;
-		//m_iCurrentSpear %= m_aSpear.GetCount();
-		m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_on, center.m_x);
-		m_fSpearTime = 0.0f;
+		m_pKinematicSpear->SetState(GameObjectSpear::e_state_off, center.m_x);
+		m_pKinematicSpear->SetState(GameObjectSpear::e_state_on, center.m_x);
 	}
 
-	m_aSpear[m_iCurrentSpear]->Update(dt);
 
+	m_fSpearTime += dt;
+
+	if (m_fSpearTime > 6.0f)
+	{
+		m_fSpearTime = (rand() % 200) / 100.0f;
+		m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_on, center.m_x);
+		m_iCurrentSpear++;
+		m_iCurrentSpear%=m_aSpear.GetCount();
+	}
+	
+	for (int nSpear = 0; nSpear < m_aSpear.GetCount(); ++nSpear)
+	{
+		m_aSpear[nSpear]->Update(dt);
+	}
+
+
+	m_pKinematicSpear->Update(dt);
 }
 
 
@@ -513,7 +537,7 @@ b2Body* CShPluginPlatformer::CreateBodySegment(const CShVector2 & point1, const 
 	return(pBody);
 }
 
-b2Body * CShPluginPlatformer::CreateSpear(ShDummyAABB2 * pShapePike, ShDummyAABB2 * pShapeSpear)
+b2Body * CShPluginPlatformer::CreateSpear(b2BodyType eType, ShDummyAABB2 * pShapePike, ShDummyAABB2 * pShapeSpear)
 {
 	//pike
 	const CShVector2 & vPikePosition = ShDummyAABB2::GetPosition2(pShapePike);
@@ -539,8 +563,11 @@ b2Body * CShPluginPlatformer::CreateSpear(ShDummyAABB2 * pShapePike, ShDummyAABB
 	b2Body * pBody = NULL;
 	{
 		b2BodyDef bd;
-		bd.type = b2_kinematicBody;
-		bd.fixedRotation = true;
+		bd.type = eType;
+
+		if (eType == b2_kinematicBody)
+			bd.fixedRotation = true;
+
 		bd.position.x = pos.x;
 		bd.position.y = pos.y;
 		pBody = m_pWorld->CreateBody(&bd);
@@ -552,12 +579,16 @@ b2Body * CShPluginPlatformer::CreateSpear(ShDummyAABB2 * pShapePike, ShDummyAABB
 		pikeShape.SetAsBox(fPikeWidth * 0.5f / RATIO_B2_SH, fPikeHeight * 0.5f / RATIO_B2_SH, convert_Sh_b2(vPikePosition) - pos, 0);
 		b2FixtureDef fd;
 		fd.shape = &pikeShape;
-		fd.density = 20.0f;
+		fd.density = 200.0f;
 		fd.friction = 0.1f;
 		fd.isSensor = false;
 		fd.filter.categoryBits = GameObject::e_type_spear;
 		fd.userData = (void*)1;
-		fd.filter.maskBits = GameObject::e_type_player;
+
+		if (eType == b2_kinematicBody)
+			fd.filter.maskBits = GameObject::e_type_player;
+		else if (eType == b2_dynamicBody)
+			fd.filter.maskBits = GameObject::e_type_player | GameObject::e_type_platform;
 
 		pBody->CreateFixture(&fd);
 	}

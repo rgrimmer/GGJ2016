@@ -71,7 +71,7 @@ public:
 
 private:
 
-	b2Body *					CreateSpear					(ShDummyAABB2 * pShapePike, ShDummyAABB2 * pShapeSpear);
+	b2Body *					CreateSpear					(b2BodyType etype, ShDummyAABB2 * pShapePike, ShDummyAABB2 * pShapeSpear);
 	b2Body *					CreateBodyCircle			(const CShVector2 & position, float radius, b2BodyType type, float fFriction, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
 	b2Body *					CreateBodyBox				(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, float fFriction, unsigned int categoryBits, unsigned int maskBits, bool isSensor);
 	b2Body *					CreateBodySegment			(const CShVector2 & p1, const CShVector2 & p2, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor);
@@ -93,6 +93,7 @@ protected:
 	CShArray<GameObjectSensor *>	m_aSensor;
 	CShArray<GameObjectRock *>		m_aRock;
 
+	GameObjectSpear *				m_pKinematicSpear;
 	CShArray<GameObjectSpear *>		m_aSpear;
 	float							m_fSpearTime;
 	int								m_iCurrentSpear;
