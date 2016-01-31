@@ -21,7 +21,7 @@ void GameContactListener::Release(void)
 //--------------------------------------------------------------------------------------------------
 void GameContactListener::Update(float dt)
 {
-	
+
 }
 
 
@@ -37,7 +37,7 @@ void GameContactListener::BeginContact(b2Contact* contact)
 	{
 		CollisionStart(contact, objectA);
 	}
-	
+
 	if (NULL != objectB)
 	{
 		CollisionStart(contact, objectB);
@@ -56,7 +56,7 @@ void GameContactListener::EndContact(b2Contact* contact)
 	{
 		CollisionEnd(contact, objectA);
 	}
-	
+
 	if (NULL != objectB)
 	{
 		CollisionEnd(contact, objectB);
@@ -95,7 +95,7 @@ void GameContactListener::CollisionStart(b2Contact * contact, GameObject * objec
 			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_player)
 			{
 				static_cast<GameObjectPike *>(object)->Start();
-			}		
+			}
 		}
 		break;
 
@@ -126,7 +126,7 @@ void GameContactListener::CollisionEnd(b2Contact * contact, GameObject * object)
 			else if(static_cast<GameObject *>(contact->GetFixtureB()->GetBody()->GetUserData())->GetType() == GameObject::e_type_player)
 			{
 				static_cast<GameObjectPike *>(object)->End();
-			}		
+			}
 		}
 		break;
 

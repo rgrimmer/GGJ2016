@@ -34,8 +34,8 @@ void GameStateMenuMain::Initialize(void)
 	m_aInputs[e_input_validate] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_return, 0.1f);
 	m_aInputs[e_input_cancel] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_pc_key_escape, 0.1f);
 #else
-	m_aInputs[e_input_up] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_up, 0.1f);
-	m_aInputs[e_input_down] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_down, 0.1f);
+	m_aInputs[e_input_up] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_left, 0.1f);
+	m_aInputs[e_input_down] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_right, 0.1f);
 	m_aInputs[e_input_validate] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_return, 0.1f);
 	m_aInputs[e_input_cancel] = ShInput::CreateInputJustPressed(ShInput::e_input_device_keyboard, ShInput::e_input_device_control_linux_key_escape, 0.1f);
 #endif // SH_PC
@@ -129,12 +129,12 @@ void GameStateMenuMain::Update(float dt)
 		m_iMenuSelectedIndex = (m_iMenuSelectedIndex + 1) % m_aTextZoneMenu.GetCount();
 		UpdateHighlightPosition();
 	}
-	else if(ShInput::IsTrue(m_aInputs[e_input_up]))
+	else if (ShInput::IsTrue(m_aInputs[e_input_up]))
 	{
 		m_iMenuSelectedIndex = (m_iMenuSelectedIndex + m_aTextZoneMenu.GetCount() - 1) % m_aTextZoneMenu.GetCount();
 		UpdateHighlightPosition();
 	}
-	else if(ShInput::IsTrue(m_aInputs[e_input_validate]))
+	else if (ShInput::IsTrue(m_aInputs[e_input_validate]))
 	{
 		switch(m_iMenuSelectedIndex)
 		{
@@ -158,9 +158,7 @@ void GameStateMenuMain::Update(float dt)
 //--------------------------------------------------------------------------------------------------
 void GameStateMenuMain::UpdateHighlightPosition(void)
 {
-	float fWidth = ShTextZone::GetSize(m_aTextZoneMenu[m_iMenuSelectedIndex]).m_x * 0.5f;
-	ShObject::SetPositionX(m_pEntityHiglight, -fWidth - ShEntity2::GetWidth(m_pEntityHiglight) * 0.5f) ;
-	ShObject::SetPositionY(m_pEntityHiglight, ShObject::GetPosition2(m_aTextZoneMenu[m_iMenuSelectedIndex]).m_y);
+	ShObject::SetPositionX(m_pEntityHiglight, ShEntity2::GetPosition2(m_aTextZoneMenu[m_iMenuSelectedIndex]).m_x) ;
 }
 
 //--------------------------------------------------------------------------------------------------

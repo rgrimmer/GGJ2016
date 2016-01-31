@@ -10,15 +10,21 @@ public:
 	enum EState
 	{
 		e_state_idle,
-		e_state_move_right,
-		e_state_move_left,
-		e_state_jump
+		e_state_running,
+		e_state_jumping
+	};
+
+	enum EDirection
+	{
+		e_direction_right,
+		e_direction_left
 	};
 
 	enum EAnimation
 	{
 		e_animation_idle,
 		e_animation_run,
+		e_animation_jump,
 		e_animation_max
 	};
 
@@ -37,13 +43,6 @@ public:
 		CShArray<ShInput*> m_aRightJoystickInputs;
 	};
 
-	enum EJumpState
-	{
-		e_jump_state_none,
-		e_jump_state_simple,
-		e_jump_state_double
-	};
-
 	//
 	// Construction / Destruction
 	explicit			GameObjectPlayer			(b2Body * body, ShEntity2 * pEntity);
@@ -55,6 +54,7 @@ public:
 	void				Update						(float dt);
 
 	void				SetState					(EState state);
+	void				SetDirection				(EDirection direction);
 
 	virtual EType		GetType						(void) const;
 	ShEntity2 *			GetEntity					(void) const;
@@ -73,7 +73,7 @@ private:
 public:
 
 	EState					m_eState;					///< @todo comment
-	EJumpState				m_eJumpState;				///< @todo comment
+	EDirection				m_eDirection;
 
 	ShEntity2 *				m_pEntity;				///< @todo comment
 

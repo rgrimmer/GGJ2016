@@ -4,13 +4,15 @@
 
 #define ANIMATION_IDLE_COUNT 24
 #define ANIMATION_RUN_COUNT 13
+#define ANIMATION_JUMP_COUNT 1
 
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
 /*explicit*/ GameObjectPlayer::GameObjectPlayer(b2Body * body, ShEntity2 * pEntity)
 : GameObject(body)
-, m_eJumpState(e_jump_state_none)
+, m_eState(e_state_idle)
+, m_eDirection(e_direction_right)
 , m_pEntity(pEntity)
 , m_iCurrentAnimation(0)
 , m_fAnimationTime(0.0f)
@@ -154,6 +156,23 @@ void GameObjectPlayer::Initialize(const CShIdentifier & levelIdentifier)
 		//ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_run][i]);
 	}
 
+	m_aAnimationEntity[e_animation_jump].SetCount(ANIMATION_JUMP_COUNT);
+
+	for (int i = 0; i < ANIMATION_JUMP_COUNT; ++i)
+	{
+		sprintf(szEntityName, "player_anim_run_%02d", i);
+
+		m_aAnimationEntity[e_animation_jump][i] = ShEntity2::Create(levelIdentifier, GID(NULL), GID(layer_default),
+			CShIdentifier("ggj"),
+			CShIdentifier(szEntityName),
+			CShVector3(0.0f,0.0f, 15.0f),
+			CShEulerAngles_ZERO,
+			CShVector3(1.0f,1.0f,1.0f));
+
+		ShEntity2::SetShow(m_aAnimationEntity[e_animation_jump][i], false);
+		//ShEntity2::SetPivotBottomCenter(m_aAnimationEntity[e_animation_jump][i]);
+	}
+
 	m_eCurrentAnimation = e_animation_idle;
 	m_iCurrentAnimation = 0;
 }
@@ -173,6 +192,12 @@ void GameObjectPlayer::Release(void)
 	{
 		ShObject::DestroyObject(m_aAnimationEntity[e_animation_run][i]);
 		m_aAnimationEntity[e_animation_run][i] = shNULL;
+	}
+
+	for (int i = 0; i < ANIMATION_JUMP_COUNT; ++i)
+	{
+		ShObject::DestroyObject(m_aAnimationEntity[e_animation_jump][i]);
+		m_aAnimationEntity[e_animation_jump][i] = shNULL;
 	}
 }
 
@@ -241,80 +266,107 @@ bool GameObjectPlayer::CheckAction(EAction eAction) const
 //--------------------------------------------------------------------------------------------------
 void GameObjectPlayer::Update(float dt)
 {
-	b2Vec2 vSpeed(0.0f, m_pBody->GetLinearVelocity().y);
-
-	if (e_state_move_left != m_eState && CheckAction(e_action_move_left))
-	{
-		SetState(e_state_move_left);
-	}
-	else if (e_state_move_right != m_eState && CheckAction(e_action_move_right))
-	{
-		SetState(e_state_move_right);
-	}
-	else if (!CheckAction(e_action_move_right) && !CheckAction(e_action_move_left) && e_state_idle != m_eState)
-	{
-		SetState(e_state_idle);
-	}
+	b2Vec2 vSpeed(0.0f, 0.0f);
 
 	switch (m_eState)
 	{
-		case e_state_move_left:
+		case e_state_idle:
 		{
-			vSpeed.x = -PLAYER_SPEED;
+			vSpeed.y = m_pBody->GetLinearVelocity().y;
+
+			if (CheckAction(e_action_move_left))
+			{
+				SetDirection(e_direction_left);
+				SetState(e_state_running);
+			}
+			else if (CheckAction(e_action_move_right))
+			{
+				SetDirection(e_direction_right);
+				SetState(e_state_running);
+			}
 		}
 		break;
 
-		case e_state_move_right:
+		case e_state_running:
 		{
-			vSpeed.x = PLAYER_SPEED;
+			if (CheckAction(e_action_jump))
+			{
+				SetState(e_state_jumping);
+				vSpeed.y = 7.12f;
+			}
+			else
+			{
+				vSpeed.y = m_pBody->GetLinearVelocity().y;
+
+				if (e_direction_left == m_eDirection)
+				{
+					if (CheckAction(e_action_move_left))
+					{
+						vSpeed.x = -PLAYER_SPEED;
+					}
+					else
+					{
+						SetState(e_state_idle);
+					}
+				}
+				else
+				{
+					if (CheckAction(e_action_move_right))
+					{
+						vSpeed.x = PLAYER_SPEED;
+					}
+					else
+					{
+						SetState(e_state_idle);
+					}
+				}
+			}
+		}
+		break;
+
+		case e_state_jumping:
+		{
+			vSpeed.y = m_pBody->GetLinearVelocity().y;
+
+			if (vSpeed.y > -0.01f && vSpeed.y < 0.01f && shNULL != m_pBody->GetContactList())
+			{
+				if (CheckAction(e_action_move_left))
+				{
+					SetDirection(e_direction_left);
+					SetState(e_state_running);
+				}
+				else if (CheckAction(e_action_move_right))
+				{
+					SetDirection(e_direction_right);
+					SetState(e_state_running);
+				}
+				else
+				{
+					SetState(e_state_idle);
+				}
+			}
+			else
+			{
+				if (e_direction_left == m_eDirection)
+				{
+					if (CheckAction(e_action_move_left))
+					{
+						vSpeed.x = -PLAYER_SPEED;
+					}
+				}
+				else
+				{
+					if (CheckAction(e_action_move_right))
+					{
+						vSpeed.x = PLAYER_SPEED;
+					}
+				}
+			}
 		}
 		break;
 	}
 
 	m_pBody->SetLinearVelocity(b2Vec2(vSpeed));
-
-	switch (m_eJumpState)
-	{
-		case e_jump_state_none:
-		{
-			if (CheckAction(e_action_jump))
-			{
-				m_pBody->SetAwake(true);
-				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 1300.0f), m_pBody->GetPosition(), false);
-
-				m_eJumpState = e_jump_state_simple;
-
-				// TODO : change sprite
-			}
-		}
-		break;
-
-		case e_jump_state_simple:
-		{
-			if (CheckAction(e_action_jump))
-			{
-				m_pBody->SetAwake(true);
-				m_pBody->ApplyLinearImpulse(b2Vec2(0.0f, 1300.0f), m_pBody->GetPosition(), false);
-
-				m_eJumpState = e_jump_state_double;
-
-				// TODO : change sprite
-			}
-		}
-		break;
-
-		case e_jump_state_double:
-		{
-			if (m_pBody->GetLinearVelocity().y > -0.01f && m_pBody->GetLinearVelocity().y < 0.01f && shNULL != m_pBody->GetContactList())
-			{
-				m_eJumpState = e_jump_state_none;
-
-				// TODO : change sprite
-			}
-		}
-		break;
-	}
-
 
 	//
 	// Update animation
@@ -348,58 +400,75 @@ void GameObjectPlayer::SetState(EState newState)
 {
 	ShEntity2::SetShow(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], false);
 
-	EState oldState = m_eState;
-
 	switch (newState)
 	{
 		case e_state_idle:
 		{
 			m_eCurrentAnimation = e_animation_idle;
 			m_iCurrentAnimation = 0;
-
-			if (oldState == e_state_move_right)
-			{
-				for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
-				{
-					ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
-				}
-			}
-			else if (oldState == e_state_move_left)
-			{
-				for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
-				{
-					ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
-				}
-			}
 		}
 		break;
 
-		case e_state_move_right:
+		case e_state_running:
 		{
 			m_eCurrentAnimation = e_animation_run;
 			m_iCurrentAnimation = 0;
-
-			for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
-			{
-				ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
-			}
 		}
 		break;
 
-		case e_state_move_left:
+		case e_state_jumping:
 		{
-			m_eCurrentAnimation = e_animation_run;
+			m_eCurrentAnimation = e_animation_jump;
 			m_iCurrentAnimation = 0;
-
-			for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
-			{
-				ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
-			}
 		}
 		break;
 	}
 
 	m_eState = newState;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void GameObjectPlayer::SetDirection(EDirection direction)
+{
+	if (direction == e_direction_right)
+	{
+		for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
+		{
+			ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
+		}
+
+		for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
+		{
+			ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
+		}
+
+		for (int i = 0; i < ANIMATION_JUMP_COUNT; ++i)
+		{
+			ShEntity2::SetRotation(m_aAnimationEntity[e_animation_jump][i], CShEulerAngles(0.0f, 0.0f, 0.0f));
+		}
+	}
+	else
+	{
+		for (int i = 0; i < ANIMATION_IDLE_COUNT; ++i)
+		{
+			ShEntity2::SetRotation(m_aAnimationEntity[e_animation_idle][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
+		}
+
+		for (int i = 0; i < ANIMATION_RUN_COUNT; ++i)
+		{
+			ShEntity2::SetRotation(m_aAnimationEntity[e_animation_run][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
+		}
+
+		for (int i = 0; i < ANIMATION_JUMP_COUNT; ++i)
+		{
+			ShEntity2::SetRotation(m_aAnimationEntity[e_animation_jump][i], CShEulerAngles(0.0f, SHC_PI, 0.0f));
+		}
+	}
+
+	m_eDirection = direction;
 }
 
 //--------------------------------------------------------------------------------------------------

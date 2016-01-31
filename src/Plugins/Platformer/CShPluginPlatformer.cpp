@@ -295,6 +295,13 @@ void CShPluginPlatformer::Release(void)
 
 /*virtual*/ void CShPluginPlatformer::OnPlayStop(const CShIdentifier & levelIdentifier)
 {
+	int iBodyCount = m_aBody.GetCount();
+	for (int nBody = 0; nBody < iBodyCount; ++nBody)
+	{
+		b2Body* pBody = m_aBody[nBody];
+		m_pWorld->DestroyBody(pBody);
+	}
+
 	m_pPlayer->Release();
 	SH_SAFE_DELETE(m_pPlayer);
 
@@ -332,13 +339,6 @@ void CShPluginPlatformer::Release(void)
 	}
 
 	m_aRock.Empty();
-
-	int iBodyCount = m_aBody.GetCount();
-	for (int nBody = 0; nBody < iBodyCount; ++nBody)
-	{
-		b2Body* pBody = m_aBody[nBody];
-		m_pWorld->DestroyBody(pBody);
-	}
 
 	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);

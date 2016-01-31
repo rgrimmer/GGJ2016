@@ -87,7 +87,7 @@ void GameStateMenuCredits::Activate(void)
 								CShIdentifier("futura_book_60.abc"),
 								CShRGBAf(1.0f,1.0f,1.0f,1.0f));
 
-	ShTextZone::SetText(m_pTextZone, CShString("aaa aaa aaaaaa aaaa"));
+	ShTextZone::SetText(m_pTextZone, CShString("[font color=\"#FFFF00\"]Game Designer[/font][br /] foxbullbee [br /][font color=\"#FFFF00\"]Sound Designer[/font][br /] Noctiluca [br /][font color=\"#FFFF00\"]Programmers[/font][br /] rgrimmer [br /] magestik"));
 }
 
 //--------------------------------------------------------------------------------------------------
