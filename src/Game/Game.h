@@ -40,6 +40,7 @@ public:
 	{
 		e_action_none,
 		e_action_push,
+		e_action_change,
 		e_action_pop
 	};
 
@@ -72,6 +73,7 @@ public:
 
 	void        Push				(EState state);
 	void        Pop					(void);
+	void		ChangeWithTransition(EState state);
 	void        PushWithTransition	(EState state);
 	void        PopWithTransition	(void);
 	void		PlaySound			(Sound::ESound sound);

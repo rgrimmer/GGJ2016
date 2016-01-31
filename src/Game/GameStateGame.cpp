@@ -2,6 +2,8 @@
 
 #include "../Plugins/Platformer/CShPluginPlatformer.h"
 
+extern CShPluginPlatformer plugin_platformer;
+
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
@@ -76,10 +78,10 @@ void GameStateGame::Activate(void)
 	Game::instance().PlaySound(Sound::e_sound_music_game);
 	ShLevel::Load(CShIdentifier("level_game"));	
 
-	m_pEntitySmoke = ShEntity2::Find(CShIdentifier("level_game"), CShIdentifier("sprite_ggj_smoke_001"));
-	ShEntity2::SetShow(m_pEntitySmoke, false);
+	/*m_pEntitySmoke = ShEntity2::Find(CShIdentifier("level_game"), CShIdentifier("sprite_ggj_smoke_001"));
+	ShEntity2::SetShow(m_pEntitySmoke, false);*/
 
-	SetState(e_state_intro);
+	SetState(e_state_play);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -124,7 +126,12 @@ void GameStateGame::Update(float dt)
 
 		case e_state_play:
 		{
-
+			if (plugin_platformer.RestartGame())
+			{
+				plugin_platformer.m_bRestartGame = false;
+				plugin_platformer.SetPaused(true);
+				Game::instance().ChangeWithTransition(Game::GAME);
+			}
 		}
 		break;
 	}
@@ -167,7 +174,6 @@ void GameStateGame::SetState(EState state)
 		ShObject::SetAlpha(m_pEntitySmoke, 0.0f);
 	}
 
-	extern CShPluginPlatformer plugin_platformer;
 	plugin_platformer.SetPaused(state != e_state_play);
 
 	m_fStateTime = 0.0f;

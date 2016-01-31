@@ -3,9 +3,9 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-void GameContactListener::Initialize(CShIdentifier levelIdentifier)
+void GameContactListener::Initialize(CShPluginPlatformer* pGame)
 {
-
+	m_pGame = pGame;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -99,9 +99,16 @@ void GameContactListener::CollisionStart(b2Contact * contact, GameObject * objec
 		}
 		break;
 
-		case GameObject::e_type_sensor:
+		case GameObject::e_type_spear:
 		{
-
+			if (contact->GetFixtureA()->GetUserData() == (void*)1)
+			{
+				m_pGame->m_bRestartGame = true;
+			}
+			else if(contact->GetFixtureB()->GetUserData() == (void*)1)
+			{
+				m_pGame->m_bRestartGame = true;
+			}
 		}
 		break;
 	}

@@ -81,6 +81,13 @@ void Game::OnPostUpdate(float dt)
 		{
 			switch(instance_->m_registeredAction.action)
 			{
+				case e_action_change :
+				{
+					instance_->Pop();
+					instance_->Push(instance_->m_registeredAction.state);
+				}
+				break;
+
 				case e_action_pop :
 				{
 					instance_->Pop();
@@ -153,6 +160,20 @@ void Game::OnTouchUp(int iTouch, float fPositionX, float fPositionY)
 void Game::OnTouchMove(int iTouch, float fPositionX, float fPositionY)
 {
 	instance_->m_aStates[instance_->m_iCurrentState]->OnTouchMove(iTouch, fPositionX, fPositionY);
+}
+
+//--------------------------------------------------------------------------------------------------
+/// @todo comment
+//--------------------------------------------------------------------------------------------------
+void Game::ChangeWithTransition(EState state)
+{
+	if (m_transition.GetState() != Transition::e_state_idle)
+		return;
+
+	m_registeredAction.action = e_action_change;
+	m_registeredAction.state = state;
+
+	m_transition.SetState(Transition::e_state_transition_in);
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -9,11 +9,12 @@
 //--------------------------------------------------------------------------------------------------
 /// @todo comment
 //--------------------------------------------------------------------------------------------------
-/*explicit*/ GameObjectPlayer::GameObjectPlayer(b2Body * body, ShEntity2 * pEntity)
+/*explicit*/ GameObjectPlayer::GameObjectPlayer(CShPluginPlatformer* pPlatformer, b2Body * body, ShEntity2 * pEntity)
 : GameObject(body)
 , m_eState(e_state_idle)
 , m_eDirection(e_direction_right)
 , m_pEntity(pEntity)
+, m_pPlatformer(pPlatformer)
 , m_iCurrentAnimation(0)
 , m_fAnimationTime(0.0f)
 {
@@ -386,6 +387,11 @@ void GameObjectPlayer::Update(float dt)
 
 		ShEntity2::SetPositionX(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], m_pBody->GetPosition().x * RATIO_B2_SH);
 		ShEntity2::SetPositionY(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation], m_pBody->GetPosition().y * RATIO_B2_SH);
+	}
+
+	if (ShObject::GetPosition2(m_aAnimationEntity[m_eCurrentAnimation][m_iCurrentAnimation]).m_y < -800.0f)
+	{
+		m_pPlatformer->m_bRestartGame = true;
 	}
 }
 

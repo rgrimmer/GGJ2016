@@ -32,6 +32,11 @@ void CShPluginPlatformer::Release(void)
 
 }
 
+bool CShPluginPlatformer::RestartGame(void)
+{
+	return m_bRestartGame;
+}
+
 /*virtual*/ void CShPluginPlatformer::OnPlayStart(const CShIdentifier & levelIdentifier)
 {
 	m_camera.Initialize(levelIdentifier);
@@ -62,6 +67,7 @@ void CShPluginPlatformer::Release(void)
 	//
 	//Create contact listener
 	m_pContactListener = new GameContactListener();
+	m_pContactListener->Initialize(this);
 	m_pWorld->SetContactListener(m_pContactListener);
 
 	//
@@ -116,9 +122,9 @@ void CShPluginPlatformer::Release(void)
 
 					ShEntity2::SetShow(aEntities[nEntity], false);
 
-					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, GameObject::e_type_player, 255, false);
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, 0.0f, GameObject::e_type_player, 255, false);
 					m_aBody.Add(pBody);
-					m_pPlayer = new GameObjectPlayer(pBody, aEntities[nEntity]);
+					m_pPlayer = new GameObjectPlayer(this, pBody, aEntities[nEntity]);
 				}
 			}
 			else if(CShIdentifier("enemy") == idDataSetIdentifier)
@@ -181,7 +187,7 @@ void CShPluginPlatformer::Release(void)
 					const float fWidth = ShEntity2::GetWidth(aEntities[nEntity]);
 					const float fHeight = ShEntity2::GetHeight(aEntities[nEntity]);
 
-					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, GameObject::e_type_enemy, 255, false);
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_dynamicBody, 0.5f, GameObject::e_type_enemy, 255, false);
 					m_aBody.Add(pBody);
 					m_aEnemy.Add(new GameObjectEnemy(pBody, aEntities[nEntity]));
 				}
@@ -216,7 +222,7 @@ void CShPluginPlatformer::Release(void)
 					const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
 					const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
 
-					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, GameObject::e_type_platform, 255, false);
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, 0.1f, GameObject::e_type_platform, 255, false);
 					m_aBody.Add(pBody);
 					m_aPlatform.Add(new GameObjectPlatform(pBody, aEntities[nEntity]));
 				}
@@ -251,9 +257,9 @@ void CShPluginPlatformer::Release(void)
 					const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
 					const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
 
-					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, GameObject::e_type_pike, GameObject::e_type_player, true);
+					b2Body * pBody = CreateBodyBox(vPosition, fWidth, fHeight, b2_staticBody, 1.0f, GameObject::e_type_pike, GameObject::e_type_player, true);
 					m_aBody.Add(pBody);
-					m_aPike.Add(new GameObjectPike(pBody, aEntities[nEntity]));
+					m_aPike.Add(new GameObjectPike(this, pBody, aEntities[nEntity]));
 				}
 			}
 			else if(CShIdentifier("rock") == idDataSetIdentifier)
@@ -278,10 +284,43 @@ void CShPluginPlatformer::Release(void)
 					ShDummyCircle * pCircle = (ShDummyCircle *)pShape;
 
 					const CShVector2 & vPosition = ShDummyCircle::GetPosition2(pCircle);
-
-					b2Body * pBody = CreateBodyCircle(vPosition, ShDummyCircle::GetCircle(pCircle).GetRadius(), b2_dynamicBody, GameObject::e_type_rock, GameObject::e_type_player, false, false);
+					float fRadius = 0.5f * ShEntity2::GetWidth(aEntities[nEntity]); //ShDummyCircle::GetCircle(pCircle).GetRadius();
+					b2Body * pBody = CreateBodyCircle(vPosition, fRadius, b2_dynamicBody, 0.8f, GameObject::e_type_rock, GameObject::e_type_player, false, false);
 					m_aBody.Add(pBody);
 					m_aRock.Add(new GameObjectRock(pBody, aEntities[nEntity]));
+				}
+			}
+			else if(CShIdentifier("spear") == idDataSetIdentifier)
+			{
+				ShDummyAABB2 * pShapePike = shNULL;
+				ShDummyAABB2 * pShapeHandle = shNULL;
+
+				{
+					int iDataCount = ShDataSet::GetDataCount(pDataSet);
+
+					for (int nData = 0; nData < iDataCount; ++nData)
+					{
+						const CShIdentifier & dataIdentifier = ShDataSet::GetDataIdentifier(pDataSet, nData);
+
+						if (dataIdentifier == CShIdentifier("pike"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, (ShObject**)&pShapePike);
+						}
+						else if(dataIdentifier == CShIdentifier("handle"))
+						{
+							ShDataSet::GetDataValue(pDataSet, nData, (ShObject**)&pShapeHandle);
+						}
+					}
+				}
+
+				if (shNULL != pShapePike && shNULL != pShapeHandle)
+				{
+					//for (int i = 0; i < 1.; ++i)
+					//{
+						b2Body * pBody = CreateSpear(pShapePike, pShapeHandle);
+						m_aSpear.Add(new GameObjectSpear(pBody, aEntities[nEntity]));
+					//}
+
 				}
 			}
 		}
@@ -289,6 +328,9 @@ void CShPluginPlatformer::Release(void)
 
 	m_pPlayer->Initialize(levelIdentifier);
 
+	m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_on, 1920.0f);
+
+	m_iCurrentSpear = 0;
 	m_bPaused = false;
 
 }
@@ -339,6 +381,13 @@ void CShPluginPlatformer::Release(void)
 	}
 
 	m_aRock.Empty();
+
+	for (int nSpear = 0; nSpear < m_aSpear.GetCount(); ++nSpear)
+	{
+		SH_SAFE_DELETE(m_aSpear[nSpear]);
+	}
+
+	m_aSpear.Empty();
 
 	m_aBody.Empty();
 	SH_SAFE_DELETE(m_pWorld);
@@ -401,6 +450,27 @@ void CShPluginPlatformer::Release(void)
 		GameObjectPlatform * pPlatform = m_aPlatform[nPlatform];
 		pPlatform->Update(dt);
 	}
+
+	int iRockCount = m_aRock.GetCount();
+	for (int nRock = 0; nRock < iRockCount; ++nRock)
+	{
+		GameObjectRock * pRock = m_aRock[nRock];
+		pRock->Update(dt);
+	}
+
+	m_fSpearTime += dt;
+
+	if (m_aSpear[m_iCurrentSpear]->GetBody()->GetPosition().x * RATIO_B2_SH < center.m_x - 1920.0f)
+	{
+		m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_off, center.m_x);
+		//m_iCurrentSpear++;
+		//m_iCurrentSpear %= m_aSpear.GetCount();
+		m_aSpear[m_iCurrentSpear]->SetState(GameObjectSpear::e_state_on, center.m_x);
+		m_fSpearTime = 0.0f;
+	}
+
+	m_aSpear[m_iCurrentSpear]->Update(dt);
+
 }
 
 
@@ -443,7 +513,76 @@ b2Body* CShPluginPlatformer::CreateBodySegment(const CShVector2 & point1, const 
 	return(pBody);
 }
 
-b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)
+b2Body * CShPluginPlatformer::CreateSpear(ShDummyAABB2 * pShapePike, ShDummyAABB2 * pShapeSpear)
+{
+	//pike
+	const CShVector2 & vPikePosition = ShDummyAABB2::GetPosition2(pShapePike);
+	const CShAABB2 & pikeAabb = ShDummyAABB2::GetAABB(pShapePike);
+	const CShVector2 & pikeMinPoint = pikeAabb.GetMin();
+	const CShVector2 & pikeMaxPoint = pikeAabb.GetMax();
+	const CShVector3 & pikeScale = ShDummyAABB2::GetScale(pShapePike);
+	const float fPikeWidth = shAbsf(pikeMaxPoint.m_x - pikeMinPoint.m_x) * pikeScale.m_x;
+	const float fPikeHeight = shAbsf(pikeMaxPoint.m_y - pikeMinPoint.m_y) * pikeScale.m_y;
+
+	//spear
+	const CShVector2 & vPosition = ShDummyAABB2::GetPosition2(pShapeSpear);
+	const CShAABB2 & aabb = ShDummyAABB2::GetAABB(pShapeSpear);
+	const CShVector2 & minPoint = aabb.GetMin();
+	const CShVector2 & maxPoint = aabb.GetMax();
+	const CShVector3 & scale = ShDummyAABB2::GetScale(pShapeSpear);
+	const float fWidth = shAbsf(maxPoint.m_x - minPoint.m_x) * scale.m_x;
+	const float fHeight = shAbsf(maxPoint.m_y - minPoint.m_y) * scale.m_y;
+
+	b2Vec2 pos = convert_Sh_b2(vPosition);
+
+	// Create Body
+	b2Body * pBody = NULL;
+	{
+		b2BodyDef bd;
+		bd.type = b2_kinematicBody;
+		bd.fixedRotation = true;
+		bd.position.x = pos.x;
+		bd.position.y = pos.y;
+		pBody = m_pWorld->CreateBody(&bd);
+	}
+
+	//pike
+	{
+		b2PolygonShape pikeShape;
+		pikeShape.SetAsBox(fPikeWidth * 0.5f / RATIO_B2_SH, fPikeHeight * 0.5f / RATIO_B2_SH, convert_Sh_b2(vPikePosition) - pos, 0);
+		b2FixtureDef fd;
+		fd.shape = &pikeShape;
+		fd.density = 20.0f;
+		fd.friction = 0.1f;
+		fd.isSensor = false;
+		fd.filter.categoryBits = GameObject::e_type_spear;
+		fd.userData = (void*)1;
+		fd.filter.maskBits = GameObject::e_type_player;
+
+		pBody->CreateFixture(&fd);
+	}
+	
+	//spear
+	{
+		b2PolygonShape spearShape;
+		spearShape.SetAsBox(fWidth * 0.5f / RATIO_B2_SH, fHeight * 0.5f / RATIO_B2_SH);
+
+		b2FixtureDef fd;
+		fd.shape = &spearShape;
+		fd.density = 20.0f;
+		fd.friction = 0.0f;
+		fd.isSensor = false;
+		fd.filter.categoryBits = GameObject::e_type_spear;
+		fd.filter.maskBits = GameObject::e_type_player;
+
+		pBody->CreateFixture(&fd);
+	}
+
+	m_aBody.Add(pBody);
+	return pBody;
+}
+
+b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float radius, b2BodyType type, float fFriction, unsigned int categoryBits, unsigned int maskBits, bool isBullet, bool isSensor)
 {
 	b2Vec2 pos = convert_Sh_b2(position);
 
@@ -452,6 +591,7 @@ b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float
 	{
 		b2BodyDef bd;
 		bd.bullet = isBullet;
+		bd.fixedRotation = true;
 		bd.type = type;
 		bd.position.x = pos.x;
 		bd.position.y = pos.y;
@@ -467,7 +607,8 @@ b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float
 		// Associate Shape to Body
 		b2FixtureDef fd;
 		fd.shape = &shape;
-		fd.density = 100.0f;
+		fd.density = 200.0f;
+		fd.friction = fFriction;
 		fd.filter.categoryBits = categoryBits;
 		fd.filter.maskBits = maskBits;
 		fd.isSensor = isSensor;
@@ -478,7 +619,7 @@ b2Body* CShPluginPlatformer::CreateBodyCircle(const CShVector2 & position, float
 	return(pBody);
 }
 
-b2Body* CShPluginPlatformer::CreateBodyBox(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, unsigned int categoryBits, unsigned int maskBits, bool isSensor)
+b2Body* CShPluginPlatformer::CreateBodyBox(const CShVector2 & position, float fWidth, float fHeight, b2BodyType type, float fFriction, unsigned int categoryBits, unsigned int maskBits, bool isSensor)
 {
 	b2Vec2 pos = convert_Sh_b2(position);
 
@@ -487,6 +628,7 @@ b2Body* CShPluginPlatformer::CreateBodyBox(const CShVector2 & position, float fW
 	{
 		b2BodyDef bd;
 		bd.type = type;
+		bd.fixedRotation = true;
 		bd.position.x = pos.x;
 		bd.position.y = pos.y;
 		pBody = m_pWorld->CreateBody(&bd);
@@ -499,7 +641,8 @@ b2Body* CShPluginPlatformer::CreateBodyBox(const CShVector2 & position, float fW
 		// Associate Shape to Body
 		b2FixtureDef fd;
 		fd.shape = &shape;
-		fd.density = 100.0f;
+		fd.density = 20.0f;
+		fd.friction = fFriction;
 		fd.isSensor = isSensor;
 		fd.filter.categoryBits = categoryBits;
 		fd.filter.maskBits = maskBits;
