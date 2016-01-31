@@ -423,7 +423,7 @@ b2Body* CShPluginPlatformer::CreateBodySegment(const CShVector2 & point1, const 
 		b2Vec2 p1, p2;
 
 		p1.x = point1.m_x / RATIO_B2_SH;
-		p1.y = point1.m_x / RATIO_B2_SH;
+		p1.y = point1.m_y / RATIO_B2_SH;
 
 		p2.x = point2.m_x / RATIO_B2_SH;
 		p2.y = point2.m_y / RATIO_B2_SH;
