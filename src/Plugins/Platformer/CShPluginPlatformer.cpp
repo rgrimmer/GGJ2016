@@ -285,7 +285,7 @@ bool CShPluginPlatformer::RestartGame(void)
 
 					const CShVector2 & vPosition = ShDummyCircle::GetPosition2(pCircle);
 					float fRadius = 0.5f * ShEntity2::GetWidth(aEntities[nEntity]); //ShDummyCircle::GetCircle(pCircle).GetRadius();
-					b2Body * pBody = CreateBodyCircle(vPosition, fRadius, b2_dynamicBody, 0.8f, GameObject::e_type_rock, GameObject::e_type_player, false, false);
+					b2Body * pBody = CreateBodyCircle(vPosition, fRadius, b2_dynamicBody, 0.8f, GameObject::e_type_rock, GameObject::e_type_player | GameObject::e_type_platform, false, false);
 					m_aBody.Add(pBody);
 					m_aRock.Add(new GameObjectRock(pBody, aEntities[nEntity]));
 				}
